@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 15 Octobre 2014 à 22:46
+-- Généré le :  Jeu 16 Octobre 2014 à 00:40
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `builds` (
   `build_number` int(2) NOT NULL,
   `worker_hash` varchar(64) NOT NULL,
   PRIMARY KEY (`build_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `buildsteps` (
   `args` text NOT NULL,
   `flags` int(2) NOT NULL,
   PRIMARY KEY (`buildstep_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS `envs` (
 
 CREATE TABLE IF NOT EXISTS `jobs` (
   `job_id` int(25) NOT NULL AUTO_INCREMENT,
+  `remote_git` varchar(255) NOT NULL,
   `job_name` varchar(255) NOT NULL,
   `job_status` int(2) NOT NULL,
   `build_number` int(3) NOT NULL,

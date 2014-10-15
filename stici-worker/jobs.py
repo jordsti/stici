@@ -1,19 +1,77 @@
 __author__ = 'JordSti'
 import subprocess
 import os
+from command import command
 
 class job:
 
     def __init__(self):
         self.__job_id = 0
 
+    def show_cmd(self, args):
+
+        text = ""
+        for a in args:
+            text += a
+            text += " "
+        print text
+
     def run(self):
         pass
 
-class pyci_job(job):
+class git_fetch_job(job):
+    def __init__(self, name, remote_git):
+        self.name = name
+        self.remote_git = remote_git
+        self.__env_dict = {}
+        self.clone = True
+        self.git_path = None
 
-    def __init__(self):
+    def set_env(self, name, value):
+        self.__env_dict[name] =  value
+
+    def run(self):
+        args = []
+        if self.git_path is not None:
+            args.append(os.path.join(self.git_path, 'git'))
+        else:
+            args.append('git')
+
+        if self.clone:
+            args.append('clone')
+            args.append("--depth=50")
+            args.append(self.remote_git)
+            args.append(self.name)
+        else:
+            args.append('pull')
+
+        self.show_cmd(args)
+        _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        line = _process.stdout.readline()
+
+        while len(line) > 0:
+            print line.rstrip('\n')
+            #print "[%s] : %s" (c.executable, line)
+            line = _process.stdout.readline()
+
+        errtxt = ""
+        line = _process.stderr.readline()
+        while len(line) > 0:
+            errtxt += line
+            line = _process.stderr.readline()
+
+        print "[StdErr] : %s" % (errtxt)
+
+        if self.clone:
+            os.chdir(self.name)
+
+class stici_job(job):
+
+    def __init__(self, name, build_id, build_number=0):
         job.__init__(self)
+        self.name = name
+        self.build_id = build_id
+        self.build_number = build_number
         self.__env_dict = {}
         self.__commands = []
 
@@ -24,25 +82,23 @@ class pyci_job(job):
         self.__commands.append(cmd)
 
     def run(self):
-        print "Running PyCI Job"
-        print "Running commands"
-
         for c in self.__commands:
             args = []
             args.append(c.executable)
             for a in c.args:
-                args.append(a)
+                if len(a) > 0:
+                    args.append(a)
 
             if c.executable == 'cd':
                 print "[%s] : %s" % (c.executable, c.args[0])
                 os.chdir(c.args[0])
             else:
+                self.show_cmd(args)
                 _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=self.__env_dict, cwd=os.getcwd())
                 line = _process.stdout.readline()
-                print args
 
                 while len(line) > 0:
-                    print line
+                    print line.rstrip('\n')
                     #print "[%s] : %s" (c.executable, line)
                     line = _process.stdout.readline()
 
@@ -52,24 +108,10 @@ class pyci_job(job):
                     errtxt += line
                     line = _process.stderr.readline()
 
-                print "[StdErr %s] : %s" % (c.executable, errtxt)
+                print "[Error %s] : %s" % (c.executable, errtxt.rstrip('\n'))
+                return_code = _process.wait()
 
-if __name__ == '__main__':
-    job = pyci_job()
-
-    job.set_env("PATH", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\bin;C:\\Program Files (x86)\\CMake\\bin;")
-    job.set_env("LIBPATH", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\lib")
-    job.set_env("INCLUDE", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\include")
-    job.set_env("CXX", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\bin\\i686-w64-mingw32-g++")
-    job.set_env("CC", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\bin\\i686-w64-mingw32-gcc")
-    job.set_env("RC", "C:\\Qt\\Qt5.3.1\\Tools\\mingw482_32\\bin\\windres")
-
-    from command import command
-
-    job.push_command(command('mkdir', ['stigame-build']))
-    job.push_command(command('cd', ['stigame-build']))
-    job.push_command(command('cmake', ['../stigame', '-G', 'MinGW Makefiles', '-DCMAKE_BUILD_TYPE:STRING=Debug']))
-    job.push_command(command('mingw32-make'))
-    job.push_command(command('mingw32-make', 'install'))
-
-    job.run()
+                if return_code < 0:
+                    print "Job Failed !"
+                    break
+                    #todo

@@ -3,6 +3,7 @@
 require_once("db/DbConnection.php");
 require_once("db/DbJob.php");
 require_once("classes/Worker.php");
+require_once("classes/Build.php");
 
 class DbWorker
 {
@@ -25,7 +26,7 @@ class DbWorker
 			$query = "INSERT INTO builds (job_id, current_id, status, stamp, build_number, worker_hash) VALUES(?, ?, ?, ?, ?, ?)";
 			
 			$st = $con->prepare($query);
-			$st->bind_param("iiiiis", $job_id, $current_id, $stat, $bn, $whash);
+			$st->bind_param("iiiiis", $job_id, $currentId, $stat, $stamp, $bn, $whash);
 			$st->execute();
 			
 			$con->close();
@@ -57,6 +58,7 @@ class DbWorker
 
 	public static function GetJob($currentId)
 	{
+
 		$con = new DbConnection();
 		
 		$job_id = 0;

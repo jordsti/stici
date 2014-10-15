@@ -15,13 +15,13 @@ build_number
 
 class DbJob
 {
-	public static function AddJob($job_name)
+	public static function AddJob($job_name, $remote_git)
 	{
 		$con = new DbConnection();
-		$query = "INSERT INTO jobs (job_name, job_status, build_number) VALUES(?,0,0)";
+		$query = "INSERT INTO jobs (job_name, job_status, build_number, remote_git) VALUES(?,0,0,?)";
 		$st = $con->prepare($query);
 		
-		$st->bind_param("s", $job_name);
+		$st->bind_param("ss", $job_name, $remote_git);
 		$st->execute();
 		
 		$con->close();
@@ -31,7 +31,7 @@ class DbJob
 	{
 		$con = new DbConnection();
 		$query = "UPDATE jobs SET build_number = ? WHERE job_id = ?";
-		$st = $con->prepare($query)
+		$st = $con->prepare($query);
 		
 		$j_id = $job->getId();
 		$j_bn = $job->getBuildNumber();
@@ -46,11 +46,11 @@ class DbJob
 	{
 		$job = 0;
 		$con = new DbConnection();
-		$query = "SELECT job_id, job_name, job_status, build_number FROM jobs WHERE job_id = ?";
+		$query = "SELECT job_id, job_name, job_status, build_number, remote_git FROM jobs WHERE job_id = ?";
 		$st = $con->prepare($query);
 		
 		$st->bind_param('i', $job_id);
-		$st->bind_result($j_id, $j_name, $j_status, $j_number);
+		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git);
 		
 		$st->execute();
 		
@@ -60,7 +60,8 @@ class DbJob
 				'id' => $j_id,
 				'name' => $j_name,
 				'status' => $j_status,
-				'build_number' => $j_number
+				'build_number' => $j_number,
+				'remote_git' => $j_git
 			);
 			
 			$job = new Job($data);
@@ -75,11 +76,11 @@ class DbJob
 	{
 		$list = array();
 		$con = new DbConnection();
-		$query = "SELECT job_id, job_name, job_status, build_number FROM jobs ORDER BY job_id";
+		$query = "SELECT job_id, job_name, job_status, build_number, remote_git FROM jobs ORDER BY job_id";
 		$st = $con->prepare($query);
 		
-		$st->bind_result($j_id, $j_name, $j_status, $j_number);
-		
+		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git);
+
 		$st->execute();
 		
 		while($st->fetch())
@@ -88,7 +89,8 @@ class DbJob
 				'id' => $j_id,
 				'name' => $j_name,
 				'status' => $j_status,
-				'build_number' => $j_number
+				'build_number' => $j_number,
+				'remote_git' => $j_git
 			);
 			
 			$j = new Job($data);

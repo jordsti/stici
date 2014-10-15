@@ -6,6 +6,7 @@ class Job
 	private $name;
 	private $status_id;
 	private $buildNumber;
+	private $remoteGit;
 	
 	public function __construct($data)
 	{
@@ -13,6 +14,7 @@ class Job
 		$this->name = $data['name'];
 		$this->status_id = $data['status'];
 		$this->buildNumber = $data['build_number'];
+		$this->remoteGit = $data['remote_git'];
 	}
 	
 	public function getId()
@@ -38,5 +40,10 @@ class Job
 	public function setBuildNumber($bn)
 	{
 		$this->buildNumber = $bn;
+	}
+	
+	public function getRemoteGit()
+	{
+		return $this->remoteGit;
 	}
 }

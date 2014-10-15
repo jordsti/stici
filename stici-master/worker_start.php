@@ -1,13 +1,29 @@
 <?php
 	require_once("db/DbWorker.php");
+	require_once("db/DbEnv.php");
+	require_once("db/DbBuildStep.php");
+	
 	if(isset($_GET['current_id']) && isset($_GET['hash']))
 	{
-		$info = DbWorker::StartBuild($_GET['current_id'], $_GET['hash']);
+		$info = DbWorker::StartBuild($_GET['hash'], $_GET['current_id']);
 		
 		if(!is_int($info))
 		{
-			echo $info['job']->getName().':'.$info['build_id']."\n";
+			echo "Name:".$info['job']->getName().':'.$info['build_id']."\n";
 			echo 'BuildNumber:'.$info['job']->getBuildNumber()."\n";
+			echo 'Git='.$info['job']->getRemoteGit()."\n";
 			
+			$envs = DbEnv::GetEnvs($info['job']->getId());
+			$steps = DbBuildStep::GetBuildSteps($info['job']->getId());
+			
+			foreach($envs as $e)
+			{
+				echo "ENV+".$e->getName()."=".$e->getValue()."\n";
+			}
+			
+			foreach($steps as $s)
+			{
+				echo "STEP+".$s->getExecutable()."|".$s->getArgs()."\n";
+			}
 		}
 	}

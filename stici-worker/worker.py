@@ -4,6 +4,9 @@ import random
 import hashlib
 import urllib2
 import remote_job
+import jobs
+import os
+import shutil
 
 def generate_worker_hash():
     stamp = time.time()
@@ -30,7 +33,7 @@ class stici_worker:
     (ClaimJob) = ('worker_claim.php')
     (StartBuild) = ('worker_start.php')
 
-    def __init__(self, master_url):
+    def __init__(self, master_url, git_path):
         self.host = platform.node()
         self.master_url = master_url
         self.hash = generate_worker_hash()
@@ -38,6 +41,7 @@ class stici_worker:
         self.interval = 30  #in seconds..
         self.polls = []
         self.current_job = None
+        self.git_path = git_path
 
 
     def run(self):
@@ -57,11 +61,84 @@ class stici_worker:
 
                 if self.current_job is not None:
                     print "Working...."
+                    self.start_build()
 
             time.sleep(self.interval)
 
     def start_build(self):
-        pass
+        cwd = os.getcwd()
+        if self.current_job is not None:
+            url = url_join(self.master_url, self.StartBuild)
+            param = "?current_id=%d&hash=%s" % (self.current_job.current_id, self.hash)
+
+            u = urllib2.urlopen(url+param)
+            rs = u.read()
+
+            #splitting lines
+            lines = rs.split('\n')
+            il = 0
+
+            job = None
+            git_job = None
+
+
+            for l in lines:
+                if il == 0:
+                    #project name and build_id
+                    data = l.split(':')
+                    job = jobs.stici_job(data[1], int(data[2]))
+                elif l.startswith('BuildNumber:'):
+                    job.build_number = int(l[12:])
+                elif l.startswith('Git='):
+                    git_job = jobs.git_fetch_job(job.name, l[4:])
+                    git_job.git_path = self.git_path
+                elif l.startswith('ENV+'):
+                    envl = l[4:]
+                    data = envl.split('=')
+                    job.set_env(data[0], data[1])
+                elif l.startswith('STEP+'):
+                    stepl = l[5:]
+                    data = stepl.split('|')
+                    from command import command
+                    job.push_command(command(data[0], data[1].split(';')))
+
+
+                il += 1
+
+
+
+            if job is not None:
+                time_start = time.time()
+                print "Job Information :"
+                print "\tName : %s" % job.name
+                print "\tBuild Id : %d" % job.build_id
+                print "\tBuild Number : %d" % job.build_number
+
+
+                print "Starting this job now !"
+
+                if git_job is not None:
+                    if os.path.exists(job.name):
+                        git_job.clone = False
+                        os.chdir(job.name)
+                    else:
+                        git_job.clone = True
+
+                    print "Fetching repository..."
+                    git_job.set_env('PATH', self.git_path)
+                    git_job.run()
+
+                job.run()
+                print "Job Terminated"
+
+                time_end = time.time()
+
+                build_time = time_end - time_start
+
+                print "In %d seconds" % build_time
+
+                os.chdir(cwd)
+
 
     def register(self):
         if not self.registered:
@@ -121,6 +198,6 @@ if __name__ == '__main__':
 
     print "Test Worker"
 
-    worker = stici_worker('http://localhost/stici')
+    worker = stici_worker('http://localhost/stici/stici-master', "C:\\Program Files (x86)\\Git\\bin")
 
     worker.run()

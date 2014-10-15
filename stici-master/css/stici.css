@@ -1,0 +1,12 @@
+body { padding-top: 70px; }
+
+.sidemenu {
+	width: 150px;
+	float:left;
+	margin-left: 12px;
+}
+
+.sidemenu a {
+	width: 100%;
+	margin-top: 5px;
+}

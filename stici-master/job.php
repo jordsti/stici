@@ -15,15 +15,8 @@
 	else
 	{
 	
+	require_once("job_sidemenu.php");
 ?>
-
-		<div class="sidemenu">
-			<h4><?php echo $page->getJob()->getName(); ?></h4>
-			<a class="btn btn-default" href="job.php?job_id=<?php echo $page->getJob()->getId(); ?>">Home</a>
-			<a class="btn btn-default">Launch build</a>
-			<a class="btn btn-default">Delete this job</a>
-			<a class="btn btn-default" href="editbuild.php?job_id=<?php echo $page->getJob()->getId(); ?>">Edit build</a>
-		</div>
 
 		<div class="container">
 			<h4>Build(s)</h4>
@@ -36,6 +29,33 @@
 				</tr>
 			</table>
 		</div>
+		
+		<div class="container">
+			<h4>Last job(s)</h4>
+			<table class="table table-hover">
+				<tr>
+					<th>Job Id</th>
+					<th>Worker Id</th>
+					<th>Status</th>
+				</tr>
+				
+				<?php
+				$jobs = $page->getJobs();
+				foreach($jobs as $j)
+				{
+				?>
+				<tr>
+					<td><?php echo $j->id; ?></td>
+					<td><?php echo $j->workerId; ?></td>
+					<td><?php echo $j->getTextStatus(); ?></td>
+				</tr>
+				<?php
+				}
+				?>
+			</table>
+		</div>
+		
+		
 
 <?php
 	}

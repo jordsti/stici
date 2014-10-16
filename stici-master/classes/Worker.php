@@ -27,6 +27,22 @@ class CurrentJob
 		}
 	}
 	
+	public function getTextStatus()
+	{
+		if($this->status == CurrentJob::$Pending)
+		{
+			return "Pending";
+		}
+		else if($this->status == CurrentJob::$Running)
+		{
+			return "Running";
+		}
+		else if($this->status == CurrentJob::$Ended)
+		{
+			return "Ended";
+		}
+	}
+	
 }
 
 class Worker

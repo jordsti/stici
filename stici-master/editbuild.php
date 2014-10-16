@@ -15,15 +15,8 @@
 	else
 	{
 	
+	require_once("job_sidemenu.php");
 ?>
-
-		<div class="sidemenu">
-			<h4><?php echo $page->getJob()->getName(); ?></h4>
-			<a class="btn btn-default" href="job.php?job_id=<?php echo $page->getJob()->getId(); ?>">Home</a>
-			<a class="btn btn-default">Launch build</a>
-			<a class="btn btn-default">Delete this job</a>
-			<a class="btn btn-default" href="editbuild.php?job_id=<?php echo $page->getJob()->getId(); ?>">Edit build</a>
-		</div>
 
 		<div class="container">
 			<div class="col-md-10 col-md-offset-1">
@@ -84,6 +77,25 @@
 								<label for="step_order_<?php echo $ie; ?>">Order</label>
 								<input type="text" class="form-control" id="step_order_<?php echo $ie; ?>" name="step_order_<?php echo $ie; ?>" value="<?php echo $s->getOrder(); ?>">
 								
+								<div class="checkbox">
+									<label>
+										<?php
+										if($s->testFlags(BuildStep::$IgnoreReturn))
+										{
+										?>
+											<input type="checkbox" value="true" id="step_flags_ignore_return_<?php echo $ie; ?>" name="step_flags_ignore_return_<?php echo $ie; ?>" checked>
+										<?php
+										}
+										else
+										{
+										?>
+											<input type="checkbox" value="true" id="step_flags_ignore_return_<?php echo $ie; ?>" name="step_flags_ignore_return_<?php echo $ie; ?>">
+										<?php
+										}
+										?>
+										Ignore Return Value
+									</label>
+								</div>
 								
 								<input type="hidden" name="step_id_<?php echo $ie; ?>" id="step_id_<?php echo $ie; ?>" value="<?php echo $s->getId(); ?>">
 								<button type="button" class="btn btn-default" onclick="delete_step(<?php echo $ie; ?>);">Delete</button>

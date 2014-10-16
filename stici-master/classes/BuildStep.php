@@ -1,12 +1,36 @@
 <?php
+class BuildStepLog
+{
+	public $id;
+	public $stepId;
+	public $buildId;
+	public $jobId;
+	
+	public $stdout;
+	public $stderr;
+	
+	public function __construct()
+	{
+		$this->id;
+		$this->stepId;
+		$this->buildId;
+		$this->jobId;
+	
+		$this->stdout;
+		$this->stderr;
+	}
+}
+
 class BuildStep
 {
-	private $id;
-	private $jobId;
-	private $order;
-	private $executable;
-	private $args;
-	private $flags;
+	public $id;
+	public $jobId;
+	public $order;
+	public $executable;
+	public $args;
+	public $flags;
+	
+	public static $IgnoreReturn = 1;
 	
 	public function __construct($data=array())
 	{
@@ -26,6 +50,23 @@ class BuildStep
 			$this->args = $data['args'];
 			$this->flags = $data['flags'];
 		}
+	}
+	
+	public function addFlags($flag)
+	{
+		$this->flags = $flag | $this->flags;
+	}
+	
+	public function removeFlags($flag)
+	{
+		$this->flags = $flag ^ $this->flags;
+	}
+	
+	public function testFlags($flag)
+	{
+		$if = $this->flags & $flag;
+		return ($if == $flag);
+		
 	}
 	
 	public function setId($id)

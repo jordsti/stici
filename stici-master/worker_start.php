@@ -23,7 +23,7 @@
 			
 			foreach($steps as $s)
 			{
-				echo "STEP+".$s->getExecutable()."|".$s->getArgs()."\n";
+				echo "STEP+".$s->getExecutable()."|".$s->getArgs()."|".$s->getFlags()."\n";
 			}
 		}
 	}

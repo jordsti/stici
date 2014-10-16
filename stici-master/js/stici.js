@@ -75,6 +75,7 @@ function create_step_form(i)
 	var exe = "step_exe_" + i;
 	var args = "step_args_" + i;
 	var order = "step_order_" + i;
+	var flags_ignore_return = "step_flags_ignore_return_" + i;
 
 	var form_grp = document.createElement("div");
 	form_grp.setAttribute('class', 'form-group');
@@ -122,6 +123,22 @@ function create_step_form(i)
 	input.setAttribute('class', 'form-control');
 	
 	form_grp.appendChild(input);
+	
+	var div = document.createElement('div');
+	div.setAttribute('class', 'checkbox');
+	
+	input = document.createElement('input');
+	input.setAttribute('id', flags_ignore_return);
+	input.setAttribute('name', flags_ignore_return);
+	input.setAttribute('value', '');
+	input.setAttribute('type', 'checkbox');
+	
+	var lbl = document.createElement('label');
+	div.appendChild(lbl);
+	lbl.innerText = "Ignore Return Value";
+	lbl.insertBefore(input, lbl.firstChild);
+	
+	form_grp.appendChild(div);
 	
 	btn = document.createElement('button');
 	btn.setAttribute('type', 'button');

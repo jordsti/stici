@@ -10,6 +10,7 @@ class Build
 	public $jobId;
 	public $buildNumber;
 	public $stamp;
+	public $stamp_end;
 	public $status;
 	public $workerHash;
 
@@ -20,6 +21,7 @@ class Build
 		$this->buildNumber = 0;
 		$this->stamp = 0;
 		$this->status = 0;
+		$this->stamp_end = 0;
 		$this->workerHash = "";
 	}
 }

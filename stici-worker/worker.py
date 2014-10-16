@@ -6,7 +6,7 @@ import urllib2
 import remote_job
 import jobs
 import os
-import shutil
+import stici_exception
 
 def generate_worker_hash():
     stamp = time.time()
@@ -28,12 +28,14 @@ def url_join(part1, part2):
     return "%s/%s" % (part1, part2);
 
 class stici_worker:
+    (Building, Success, Failed) = (0, 1, 2)
     (RegisterRequest) = ('worker_register.php')
     (PollJob) = ('worker_pool.php')
     (ClaimJob) = ('worker_claim.php')
     (StartBuild) = ('worker_start.php')
+    (BuildEnded) = ('worker_end.php')
 
-    def __init__(self, master_url, git_path):
+    def __init__(self, master_url, git_path, workspace="workspace"):
         self.host = platform.node()
         self.master_url = master_url
         self.hash = generate_worker_hash()
@@ -42,6 +44,9 @@ class stici_worker:
         self.polls = []
         self.current_job = None
         self.git_path = git_path
+        self.workspace = workspace
+        self.build_id = 0
+        self.status = self.Building
 
 
     def run(self):
@@ -63,10 +68,29 @@ class stici_worker:
                     print "Working...."
                     self.start_build()
 
+            print "Sleeping for %d seconds..." % self.interval
             time.sleep(self.interval)
 
+    def build_ended(self):
+
+        url = url_join(self.master_url, self.BuildEnded)
+        param = "?build_id=%d&hash=%s&status=%d" % (self.build_id, self.hash, self.status)
+
+        print "Sending build result"
+        u = urllib2.urlopen(url+param)
+
+        rs = u.read()
+        print rs  #todo debug purpose
+
     def start_build(self):
+
+        if not os.path.exists(self.workspace):
+            os.makedirs(self.workspace)
+
         cwd = os.getcwd()
+
+        os.chdir(self.workspace)
+
         if self.current_job is not None:
             url = url_join(self.master_url, self.StartBuild)
             param = "?current_id=%d&hash=%s" % (self.current_job.current_id, self.hash)
@@ -81,12 +105,13 @@ class stici_worker:
             job = None
             git_job = None
 
-
             for l in lines:
                 if il == 0:
                     #project name and build_id
                     data = l.split(':')
+                    self.build_id = int(data[2])
                     job = jobs.stici_job(data[1], int(data[2]))
+                    job.set_env('SystemRoot', os.environ['SystemRoot'])
                 elif l.startswith('BuildNumber:'):
                     job.build_number = int(l[12:])
                 elif l.startswith('Git='):
@@ -99,9 +124,8 @@ class stici_worker:
                 elif l.startswith('STEP+'):
                     stepl = l[5:]
                     data = stepl.split('|')
-                    from command import command
-                    job.push_command(command(data[0], data[1].split(';')))
-
+                    from build_step import build_step
+                    job.push_step(build_step(data[0], data[1].split(';'), job.get_env(), int(data[2])))
 
                 il += 1
 
@@ -120,15 +144,24 @@ class stici_worker:
                 if git_job is not None:
                     if os.path.exists(job.name):
                         git_job.clone = False
-                        os.chdir(job.name)
                     else:
                         git_job.clone = True
 
                     print "Fetching repository..."
                     git_job.set_env('PATH', self.git_path)
                     git_job.run()
-
-                job.run()
+                try:
+                    job.run()
+                    self.status = self.Success
+                except stici_exception.step_failed as sf:
+                    print "Step failed !"
+                    print sf.build_step.executable
+                    print sf.build_step.stderr
+                    self.status = self.Failed
+                #except Exception as e:
+                    #print "Fatal Error"
+                    #print str(e)
+                    #self.status = self.Failed
                 print "Job Terminated"
 
                 time_end = time.time()
@@ -137,6 +170,9 @@ class stici_worker:
 
                 print "In %d seconds" % build_time
 
+
+                #sending build ended
+                self.build_ended()
                 os.chdir(cwd)
 
 
@@ -150,6 +186,7 @@ class stici_worker:
 
             if 'OK!' in rs:
                 self.registered = True
+                print "Worker is registered to %s" % self.master_url
             else:
                 print "Can't register to a master!"
 
@@ -172,6 +209,7 @@ class stici_worker:
 
     def poll(self):
         if self.registered:
+            print "Polling %s" % self.master_url
             url = url_join(self.master_url, self.PollJob)
             param = "?hash=%s" % self.hash
 
@@ -193,11 +231,23 @@ class stici_worker:
             print "Not registered cannot poll !"
 
 
-
+import sys
 if __name__ == '__main__':
 
-    print "Test Worker"
+    print "Sti::CI Worker"
+    _workspace = "workspace"
+    ia = 0
+    ma = len(sys.argv)
+    while ia < ma:
+        arg = sys.argv[ia]
 
-    worker = stici_worker('http://localhost/stici/stici-master', "C:\\Program Files (x86)\\Git\\bin")
+        if arg == '-w':
+            ia += 1
+            if ia < ma:
+                _workspace = sys.argv[ia]
 
+        ia += 1
+
+
+    worker = stici_worker('http://localhost/stici/stici-master', "C:\\Program Files (x86)\\Git\\bin", _workspace)
     worker.run()

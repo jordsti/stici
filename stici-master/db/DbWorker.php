@@ -7,6 +7,66 @@ require_once("classes/Build.php");
 
 class DbWorker
 {
+	public static function EndBuild($build_id, $whash, $status)
+	{
+		
+		$stamp = time();
+		
+		$con = new DbConnection();
+		$query = "UPDATE builds SET status = ?, stamp_end = ? WHERE build_id = ? AND worker_hash = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("iiis", $status, $stamp, $build_id, $whash);
+		$st->execute();
+		
+		$con->close();
+		
+		$c_id = 0;
+		
+		$con = new DbConnection();
+		$query = "SELECT current_id FROM builds WHERE build_id = ? AND worker_hash = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("is", $build_id, $whash);
+		$st->bind_result($cid);
+		$st->execute();
+		
+		if($st->fetch())
+		{
+			$c_id = $cid;
+		}
+		
+		$con->close();
+		
+		if($c_id > 0)
+		{
+			$stat = CurrentJob::$Ended;
+			DbWorker::UpdateCurrentJobStatus($c_id, $stat);
+		}
+		
+		//updating current worker status
+		$stat = Worker::$Idle;
+		DbWorker::UpdateWorkerStatus($whash, $stat);
+	}
+	
+	public static function UpdateCurrentJobStatus($current_id, $status)
+	{
+		$con = new DbConnection();
+		$query = "UPDATE current_jobs SET status = ? WHERE current_id = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("ii", $status, $current_id);
+		$st->execute();
+		$con->close();
+	}
+	
+	public static function UpdateWorkerStatus($whash, $status)
+	{
+		$con = new DbConnection();
+		$query = "UPDATE workers SET worker_status = ? WHERE worker_hash = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("is", $status, $whash);
+		$st->execute();
+		$con->close();
+	}
+
 	public static function StartBuild($whash, $currentId)
 	{
 		$job = DbWorker::GetJob($currentId);
@@ -49,6 +109,8 @@ class DbWorker
 			
 			$job->setBuildNumber($bn);
 			DbJob::UpdateJob($job);
+			$stat = Worker::$Running;
+			DbWorker::UpdateWorkerStatus($whash, $stat);
 			
 			return array('build_id' => $build_id, 'job' => $job);
 		}
@@ -155,6 +217,7 @@ class DbWorker
 		
 		return false;
 	}
+	
 
 	public static function WorkerIsRegistered($hash)
 	{

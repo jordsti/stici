@@ -107,6 +107,11 @@ class EditBuildAction extends CommonAction
 					$bs->setExecutable($_POST['step_exe_'.$ie]);
 					$bs->setArgs($_POST['step_args_'.$ie]);
 					$bs->setOrder($_POST['step_order_'.$ie]);
+					
+					if(isset($_POST['step_flags_ignore_return_'.$ie]))
+					{
+						$bs->addFlags(BuildStep::$IgnoreReturn);
+					}
 	
 					$_steps[] = $bs;
 					

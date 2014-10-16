@@ -3,9 +3,33 @@ import subprocess
 import stici_exception
 import os
 import time
-import io
+import sys
+import threading
 import Queue
 from threading import Thread
+
+class AsynchronousFileReader(threading.Thread):
+    '''
+    Helper class to implement asynchronous reading of a file
+    in a separate thread. Pushes read lines on a queue to
+    be consumed in another thread.
+    '''
+
+    def __init__(self, fd, queue):
+        assert isinstance(queue, Queue.Queue)
+        assert callable(fd.readline)
+        threading.Thread.__init__(self)
+        self._fd = fd
+        self._queue = queue
+
+    def run(self):
+        '''The body of the tread: read lines and put them on the queue.'''
+        for line in iter(self._fd.readline, ''):
+            self._queue.put(line)
+
+    def eof(self):
+        '''Check whether there is no more content to expect.'''
+        return not self.is_alive() and self._queue.empty()
 
 class build_step:
     (IgnoreReturn) = (1)
@@ -17,6 +41,7 @@ class build_step:
         self.flags = flags
         self.stdout = ""
         self.stderr = ""
+        self.step_id = 0
         self.return_code = 0
         self.timeout = timeout
 
@@ -47,86 +72,42 @@ class build_step:
             except Exception:
                 pass
         else:
-            self.__env_dict["PYTHONBUFFERED"] = "1"
-            _process = subprocess.Popen(args, bufsize=1, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=self.__env_dict)
+            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=self.__env_dict)
             started = time.time()
 
-            inp = Queue.Queue()
+            stdout_queue = Queue.Queue()
+            stdout_reader = AsynchronousFileReader(_process.stdout, stdout_queue)
+            stdout_reader.start()
+            stderr_queue = Queue.Queue()
+            stderr_reader = AsynchronousFileReader(_process.stderr, stderr_queue)
+            stderr_reader.start()
 
-            sout = io.open(_process.stdout.fileno(), 'rb', closefd=False)
-            serr = io.open(_process.stderr.fileno(), 'rb', closefd=False)
+            while not stdout_reader.eof() or not stderr_reader.eof() or _process.poll() is None:
+                while not stdout_queue.empty():
+                    line = stdout_queue.get()
+                    print line.rstrip('\n')
+                    self.stdout += line
 
-            def Pump(stream, category):
-                queue = Queue.Queue()
-                def rdr():
-                    while True:
-                        buf = stream.read1(1024)
-                        if len(buf)>0:
-                            queue.put(buf)
-                        else:
-                            queue.put(None)
-                            return
-                def clct():
-                    active = True
-                    while active:
-                        r = queue.get()
-                        try:
-                            while True:
-                                r1 = queue.get(timeout=0.005)
-                                if r1 is None:
-                                    active = False
-                                    break
-                                else:
-                                    r += r1
-                        except Queue.Empty:
-                            pass
-                        inp.put( (category, r) )
-                for tgt in [rdr, clct]:
-                    th = Thread(target=tgt)
-                    th.setDaemon(True)
-                    th.start()
-            Pump(sout, 'stdout')
-            Pump(serr, 'stderr')
 
-            while _process.poll() is None:
-                # App still working
-                time.sleep(0.1)
-                try:
-                    chan, line = inp.get_nowait()
-                    if chan=='stdout' and line is not None:
-                        print "STDOUT>>", line
-                    elif chan=='stderr' and line is not None:
-                        print " STDERR>>", line
-                except Queue.Empty:
-                    pass
+                while not stderr_queue.empty():
+                    line = stderr_queue.get()
+                    print line.rstrip('\n')
+                    self.stderr += line
+
+                time.sleep(.1)
+
+            stdout_reader.join()
+            stderr_reader.join()
+
+            # Close subprocess' file descriptors.
+            _process.stdout.close()
+            _process.stderr.close()
 
             self.return_code = _process.returncode
+            time_elapsed = time.time() - started
+            print "%d seconds" % time_elapsed
 
-
-            """ while _process.returncode is None:
-                _process.poll()
-                err_line = _process.stderr.readline()
-                out_line = _process.stdout.readline()
-                #_process.stdin.write("")
-
-                if len(err_line.rstrip('\n')) > 0:
-                    print err_line.rstrip('\n')
-                self.stderr += err_line
-
-                if len(out_line.rstrip('\n')) > 0:
-                    print out_line.rstrip('\n')
-                self.stdout += out_line
-
-                runtime = time.time() - started
-                time.sleep(0.1)
-
-                if runtime > self.timeout:
-                    print "TIMEOUT"  """
-
-            self.return_code = _process.returncode
-
-            print self.stdout
-            if self.return_code >= 0:
+            if self.return_code == 0:
                 pass
             elif self.test_flags(self.IgnoreReturn):
                 pass

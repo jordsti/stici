@@ -2,6 +2,8 @@ __author__ = 'JordSti'
 import subprocess
 import os
 from build_step import build_step
+import worker
+import stici_exception
 
 class job:
 
@@ -69,8 +71,9 @@ class git_fetch_job(job):
 class stici_job(job):
 
 
-    def __init__(self, name, build_id, build_number=0):
+    def __init__(self, worker, name, build_id, build_number=0):
         job.__init__(self)
+        self.worker = worker
         self.name = name
         self.build_id = build_id
         self.build_number = build_number
@@ -89,4 +92,15 @@ class stici_job(job):
 
     def run(self):
         for s in self.__steps:
-            s.do()
+            _step_failed = False
+            try:
+                s.do()
+            except Exception as e:
+                print e.message
+                _step_failed = True
+
+            slt = worker.send_log_thread(self.worker, self.build_id, s.step_id, s.stdout, s.stderr, s.return_code)
+            slt.start()
+
+            if _step_failed:
+                raise stici_exception.step_failed(s)

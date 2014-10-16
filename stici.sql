@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 16 Octobre 2014 à 00:40
+-- Généré le :  Jeu 16 Octobre 2014 à 08:51
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `builds` (
   `job_id` int(25) NOT NULL,
   `status` int(2) NOT NULL,
   `stamp` int(25) NOT NULL,
+  `stamp_end` int(25) NOT NULL,
   `build_number` int(2) NOT NULL,
   `worker_hash` varchar(64) NOT NULL,
   PRIMARY KEY (`build_id`)
@@ -51,6 +52,23 @@ CREATE TABLE IF NOT EXISTS `buildsteps` (
   `args` text NOT NULL,
   `flags` int(2) NOT NULL,
   PRIMARY KEY (`buildstep_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `buildsteps_logs`
+--
+
+CREATE TABLE IF NOT EXISTS `buildsteps_logs` (
+  `log_id` int(25) NOT NULL AUTO_INCREMENT,
+  `step_id` int(25) NOT NULL,
+  `build_id` int(25) NOT NULL,
+  `duration` int(25) NOT NULL,
+  `stdout` text NOT NULL,
+  `stderr` text NOT NULL,
+  `return_code` int(11) NOT NULL,
+  PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

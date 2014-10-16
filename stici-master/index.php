@@ -4,13 +4,8 @@
 	$page->execute();
 
 	require_once("header.php");
+	require_once("sidemenu.php");
 ?>
-		<div class="sidemenu">
-			<h4>Menu</h4>
-			<a class="btn btn-default" href="addjob.php">Add job</a>
-			<a class="btn btn-default">Browse Workspace</a>
-			<a class="btn btn-default">View Workers</a>
-		</div>
 		
 		<!-- page here -->
 		<div class="container">

@@ -4,20 +4,18 @@ class BuildStepLog
 	public $id;
 	public $stepId;
 	public $buildId;
-	public $jobId;
-	
+	public $duration;
 	public $stdout;
 	public $stderr;
 	
 	public function __construct()
 	{
-		$this->id;
-		$this->stepId;
-		$this->buildId;
-		$this->jobId;
-	
-		$this->stdout;
-		$this->stderr;
+		$this->id = 0;
+		$this->stepId = 0;
+		$this->buildId = 0;
+		$this->duration = 0;
+		$this->stdout = "";
+		$this->stderr = "";
 	}
 }
 

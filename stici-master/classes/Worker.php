@@ -77,4 +77,38 @@ class Worker
 		}
 	}
 	
+	public function getStatusText()
+	{
+		if($this->status == Worker::$Idle)
+		{
+			return "Idle";
+		}
+		else if($this->status == Worker::$Running)
+		{
+			return "Running";
+		}
+	}
+	
+	public function getLastAction()
+	{
+		$now = time();
+		
+		$diff = $now - $this->lastTick;
+		
+		if($diff > 60)
+		{
+			$min = floor($diff/60);
+			return $min." minutes ago";
+		}
+		else if($diff == 0)
+		{
+			return "now";
+		}
+		else
+		{
+			return $diff." seconds ago";
+		}
+		
+	}
+	
 }

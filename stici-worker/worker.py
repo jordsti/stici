@@ -2,8 +2,10 @@ import platform
 import time
 import random
 import hashlib
+import urllib
 import urllib2
 import remote_job
+import threading
 import jobs
 import os
 import stici_exception
@@ -34,6 +36,7 @@ class stici_worker:
     (ClaimJob) = ('worker_claim.php')
     (StartBuild) = ('worker_start.php')
     (BuildEnded) = ('worker_end.php')
+    (BuildStepLog) = ('worker_log.php')
 
     def __init__(self, master_url, git_path, workspace="workspace"):
         self.host = platform.node()
@@ -78,9 +81,7 @@ class stici_worker:
 
         print "Sending build result"
         u = urllib2.urlopen(url+param)
-
         rs = u.read()
-        print rs  #todo debug purpose
 
     def start_build(self):
 
@@ -97,7 +98,6 @@ class stici_worker:
 
             u = urllib2.urlopen(url+param)
             rs = u.read()
-
             #splitting lines
             lines = rs.split('\n')
             il = 0
@@ -110,7 +110,7 @@ class stici_worker:
                     #project name and build_id
                     data = l.split(':')
                     self.build_id = int(data[2])
-                    job = jobs.stici_job(data[1], int(data[2]))
+                    job = jobs.stici_job(self, data[1], int(data[2]))
                     job.set_env('SystemRoot', os.environ['SystemRoot'])
                 elif l.startswith('BuildNumber:'):
                     job.build_number = int(l[12:])
@@ -125,7 +125,9 @@ class stici_worker:
                     stepl = l[5:]
                     data = stepl.split('|')
                     from build_step import build_step
-                    job.push_step(build_step(data[0], data[1].split(';'), job.get_env(), int(data[2])))
+                    bs = build_step(data[0], data[1].split(';'), job.get_env(), int(data[2]))
+                    bs.step_id = int(data[3])
+                    job.push_step(bs)
 
                 il += 1
 
@@ -152,6 +154,7 @@ class stici_worker:
                     git_job.run()
                 try:
                     job.run()
+
                     self.status = self.Success
                 except stici_exception.step_failed as sf:
                     print "Step failed !"
@@ -229,6 +232,26 @@ class stici_worker:
 
         else:
             print "Not registered cannot poll !"
+
+
+
+class send_log_thread(threading.Thread):
+
+    def __init__(self, _worker, build_id, step_id, stdout, stderr, return_code):
+        self.worker = _worker
+        self.step_id = step_id
+        self.build_id = build_id
+        self.stdout = stdout
+        self.stderr = stderr
+        self.return_code = return_code
+        threading.Thread.__init__(self)
+
+    def run(self):
+        url = url_join(self.worker.master_url, stici_worker.BuildStepLog)
+        data = {'step_id':self.step_id, 'build_id':self.build_id, 'hash':self.worker.hash, 'stdout':self.stdout, 'stderr':self.stderr, 'return_code':self.return_code}
+        data = urllib.urlencode(data)
+        r = urllib.urlopen(url, data)
+        print r.read()
 
 
 import sys

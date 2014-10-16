@@ -7,6 +7,46 @@ require_once("classes/Build.php");
 
 class DbWorker
 {
+	public static function GetWorkers()
+	{
+		$list = array();
+		DbWorker::CleanWorker();
+		
+		$con = new DbConnection();
+		$query = "SELECT worker_id, worker_hash, worker_status, hostname, remote_addr, last_tick FROM workers ORDER BY last_tick DESC";
+		$st = $con->prepare($query);
+		$st->bind_result($w_id, $w_hash, $status, $hostname, $remote_addr, $last_tick);
+		
+		$st->execute();
+		
+		while($st->fetch())
+		{
+			$w = new Worker();
+			$w->id = $w_id;
+			$w->hash = $w_hash;
+			$w->status = $status;
+			$w->hostname = $hostname;
+			$w->remoteAddr = $remote_addr;
+			$w->lastTick = $last_tick;
+			
+			$list[] = $w;
+		}
+		
+		$con->close();
+		return $list;
+	}
+
+	public static function InsertStepLog($whash, $build_id, $step_id, $stdout, $stderr, $rc)
+	{
+		$con = new DbConnection();
+		$query = "INSERT INTO buildsteps_logs (build_id, step_id, stdout, stderr, return_code) VALUES (?, ?, ?, ?, ?)";
+		$st = $con->prepare($query);
+		$st->bind_param("iissi", $build_id, $step_id, $stdout, $stderr, $rc);
+		$st->execute();
+		$con->close();
+		DbWorker::TickByHash($whash);
+	}
+
 	public static function EndBuild($build_id, $whash, $status)
 	{
 		
@@ -241,17 +281,32 @@ class DbWorker
 		//tick it
 		if($exists)
 		{
-			$con = new DbConnection();
-			$stamp = time();
-			$query = "UPDATE workers SET last_tick = ? WHERE worker_id = ?";
-			$st2 = $con->prepare($query);
-			$st2->bind_param("ii", $stamp, $w_id);
-			$st2->execute();
-			$con->close();
+			DbWorker::Tick($w_id);
 		}
 		
-		
 		return $exists;
+	}
+	
+	public static function TickByHash($whash)
+	{
+		$con = new DbConnection();
+		$stamp = time();
+		$query = "UPDATE workers SET last_tick = ? WHERE worker_hash = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("is", $stamp, $worker_hash);
+		$st->execute();
+		$con->close();
+	}
+	
+	public static function Tick($worker_id)
+	{
+		$con = new DbConnection();
+		$stamp = time();
+		$query = "UPDATE workers SET last_tick = ? WHERE worker_id = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("ii", $stamp, $worker_id);
+		$st->execute();
+		$con->close();
 	}
 
 	public static function PollJob()

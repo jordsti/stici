@@ -316,7 +316,7 @@ class DbWorker
 		
 		$status = CurrentJob::$Pending;
 		
-		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE status = ?";
+		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE status = ? ORDER BY current_id ASC";
 		
 		$st = $con->prepare($query);
 		$st->bind_param("i", $status);

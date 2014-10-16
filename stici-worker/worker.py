@@ -63,7 +63,7 @@ class stici_worker:
             self.poll()
 
             if len(self.polls) > 0:
-                last = self.polls[-1]
+                last = self.polls[0]
                 print "Claiming a job..."
                 self.claim_job(last)
 

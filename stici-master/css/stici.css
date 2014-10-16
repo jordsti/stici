@@ -10,3 +10,18 @@ body { padding-top: 70px; }
 	width: 100%;
 	margin-top: 5px;
 }
+
+.maintable
+{
+	margin-left:175px;
+	width: 80%;
+}
+
+h4 .content {
+	margin-left: 190px;
+}
+
+.errtxt {
+	color: red;
+	font-weight: bold;
+}

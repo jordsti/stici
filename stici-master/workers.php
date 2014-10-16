@@ -5,12 +5,19 @@
 
 	require_once("header.php");
 	require_once("sidemenu.php");
+	$workers = $page->workers;
 	?>
 		
-		<!-- page here -->
 		<div class="container">
+		<?php if(count($workers) == 0)
+		{
+		?>
+			<h3>No worker are connected at the moment</h3><br>
+		<?php
+		}
+		?>
 			<h4>Workers(s)</h4>
-			<table class="table table-hover">
+			<table class="table table-hover maintable">
 				<tr>
 					<th>Hostname</th>
 					<th>IP</th>
@@ -19,7 +26,6 @@
 					<th>Last Action</th>
 				</tr>
 				<?php
-				$workers = $page->workers;
 				foreach($workers as $w)
 				{
 				?>

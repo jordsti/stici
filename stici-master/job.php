@@ -18,19 +18,36 @@
 	require_once("job_sidemenu.php");
 ?>
 
-		<div class="container">
+		<div class="container maintable">
 			<h4>Build(s)</h4>
 			<table class="table table-hover">
 				<tr>
 					<th>Status</th>
 					<th>Build Time</th>
 					<th>Build Number</th>
-					<th>Build On</th>
+					<th>-</th>
 				</tr>
+			<?php
+				$builds = $page->getBuilds();
+				foreach($builds as $b)
+				{
+			?>
+				<tr>
+					<td><?php echo $b->getStatusText(); ?></td>
+					<td><?php echo $b->getBuildTime(); ?></td>
+					<td><?php echo $b->buildNumber; ?></td>
+					<td><a class="btn btn-default" href="viewbuild.php?build_id=<?php echo $b->id; ?>">View Build</a></td>
+				</tr>
+			
+			<?php
+				}
+			?>
+				
+				
 			</table>
 		</div>
 		
-		<div class="container">
+		<div class="container maintable">
 			<h4>Last job(s)</h4>
 			<table class="table table-hover">
 				<tr>

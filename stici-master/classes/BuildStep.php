@@ -7,6 +7,7 @@ class BuildStepLog
 	public $duration;
 	public $stdout;
 	public $stderr;
+	public $returnCode;
 	
 	public function __construct()
 	{
@@ -16,6 +17,7 @@ class BuildStepLog
 		$this->duration = 0;
 		$this->stdout = "";
 		$this->stderr = "";
+		$this->returnCode = 0;
 	}
 }
 

@@ -4,6 +4,35 @@ require_once("classes/BuildStep.php");
 
 class DbBuildStep
 {
+	public static function GetStepLogs($build_id)
+	{
+		$list = array();
+		$con = new DbConnection();
+		
+		$query = "SELECT l.log_id, l.step_id, l.build_id, l.duration, l.stdout, l.stderr, l.return_code, s.flags FROM buildsteps_logs l INNER JOIN buildsteps s ON s.buildstep_id = l.step_id WHERE l.build_id = ? ORDER BY s.step_order";
+		$st = $con->prepare($query);
+		$st->bind_param("i", $build_id);
+		$st->bind_result($l_id, $s_id, $b_id, $duration, $stdout, $stderr, $rc, $flags);
+		$st->execute();
+		
+		while($st->fetch())
+		{
+			$log = new BuildStepLog();
+			$log->id = $l_id;
+			$log->stepId =  $s_id;
+			$log->buildId = $b_id;
+			$log->duration = $duration;
+			$log->stdout = $stdout;
+			$log->stderr = $stderr;
+			$log->returnCode = $rc;
+			
+			$list[] = $log;
+		}
+		
+		$con->close();
+		return $list;
+	}
+
 	public static function GetBuildSteps($job_id)
 	{
 		$list = array();

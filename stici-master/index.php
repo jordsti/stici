@@ -10,7 +10,7 @@
 		<!-- page here -->
 		<div class="container">
 			<h4>Job(s)</h4>
-			<table class="table table-hover">
+			<table class="table table-hover maintable">
 				<tr>
 					<th>Name</th>
 					<th>Status</th>

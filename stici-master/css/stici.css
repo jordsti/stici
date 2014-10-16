@@ -25,3 +25,17 @@ h4 .content {
 	color: red;
 	font-weight: bold;
 }
+
+#import_form
+{
+	width: 100%;
+	visibility: hidden;
+}
+
+.footer
+{
+	margin: auto;
+	margin-top: 100px;
+	font-size: 10px;
+	font-weight: bold;
+}

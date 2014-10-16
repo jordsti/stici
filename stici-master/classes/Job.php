@@ -4,17 +4,39 @@ class Job
 {
 	private $id;
 	private $name;
-	private $status_id;
+	private $status;
 	private $buildNumber;
 	private $remoteGit;
+	public $stamp;
+	
+	public static $Building = 0;
+	public static $Success = 1;
+	public static $Failed = 2;
 	
 	public function __construct($data)
 	{
 		$this->id = $data['id'];
 		$this->name = $data['name'];
-		$this->status_id = $data['status'];
+		$this->status = $data['status'];
 		$this->buildNumber = $data['build_number'];
 		$this->remoteGit = $data['remote_git'];
+		$this->stamp = 0;
+	}
+	
+	public function getStatusText()
+	{
+		if($this->status == Job::$Building)
+		{
+			return "Not Builded";
+		}
+		else if($this->status == Job::$Success)
+		{
+			return "Success";
+		}
+		else if($this->status == Job::$Failed)
+		{
+			return "Failed";
+		}
 	}
 	
 	public function getId()
@@ -27,9 +49,9 @@ class Job
 		return $this->name;
 	}
 	
-	public function getStatusId()
+	public function getStatus()
 	{
-		return $this->status_id;
+		return $this->status;
 	}
 	
 	public function getBuildNumber()
@@ -45,5 +67,33 @@ class Job
 	public function getRemoteGit()
 	{
 		return $this->remoteGit;
+	}
+	
+	public function getBuildTimeAgo()
+	{
+		$stamp = time() - $this->stamp;
+	
+		$sec = $stamp % 60;
+		$min = floor($stamp / 60);
+		$h = floor($min / 60);
+		$d = floor($h / 24);
+		
+		if($stamp < 60)
+		{
+			return $sec." seconds ago";
+		}
+		else if($min < 60)
+		{
+			return $min." minutes ago";
+		}
+		else if($h < 24)
+		{
+			return $h." hours ago";
+		}
+		else
+		{
+			return $d." days ago";
+		}
+		
 	}
 }

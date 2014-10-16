@@ -1,17 +1,6 @@
 <?php
 require_once("db/DbConnection.php");
 require_once("classes/Job.php");
-/*
-
-fields:
-
-job_id
-job_name
-status
-build_number
-
-
-*/
 
 class DbJob
 {
@@ -25,6 +14,25 @@ class DbJob
 		$st->execute();
 		
 		$con->close();
+	}
+	
+	public static function GetJobId($job_name, $remote_git)
+	{
+		$id = 0;
+		$con = new DbConnection();
+		$query = "SELECT job_id FROM jobs WHERE job_name = ? AND remote_git = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("ss", $job_name, $remote_git);
+		$st->bind_result($job_id);
+		$st->execute();
+		
+		if($st->fetch())
+		{
+			$id = $job_id;
+		}
+		
+		$con->close();
+		return $id;
 	}
 	
 	public static function UpdateJob($job)
@@ -76,10 +84,10 @@ class DbJob
 	{
 		$list = array();
 		$con = new DbConnection();
-		$query = "SELECT job_id, job_name, job_status, build_number, remote_git FROM jobs ORDER BY job_id";
+		$query = "SELECT * FROM (SELECT j.job_id, j.job_name, b.status, j.build_number, j.remote_git, b.stamp_end FROM jobs j LEFT JOIN builds b ON b.job_id = j.job_id ORDER BY b.build_id DESC) t1 GROUP BY job_id ORDER BY stamp_end DESC";
 		$st = $con->prepare($query);
 		
-		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git);
+		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git, $stamp);
 
 		$st->execute();
 		
@@ -94,6 +102,7 @@ class DbJob
 			);
 			
 			$j = new Job($data);
+			$j->stamp = $stamp;
 			
 			$list[] = $j;
 		}

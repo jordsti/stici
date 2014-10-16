@@ -8,9 +8,9 @@
 ?>
 		
 		<!-- page here -->
-		<div class="container">
+		<div class="container maintable">
 			<h4>Job(s)</h4>
-			<table class="table table-hover maintable">
+			<table class="table table-hover">
 				<tr>
 					<th>Name</th>
 					<th>Status</th>
@@ -25,10 +25,10 @@
 				?>
 					<tr>
 						<td><a href="job.php?job_id=<?php echo $job->getId(); ?>"><?php echo $job->getName(); ?></a></td>
-						<td><?php echo $job->getStatusId(); ?></td>
+						<td><?php echo $job->getStatusText(); ?></td>
 						<td><?php echo $job->getName(); ?></td>
 						<td><?php echo $job->getBuildNumber(); ?></td>
-						<td><?php echo $job->getName(); ?></td>
+						<td><?php echo $job->getBuildTimeAgo(); ?></td>
 					</tr>
 				<?php
 				}

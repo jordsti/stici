@@ -1,3 +1,9 @@
+function import_job()
+{
+	var div = document.getElementById('import_form');
+	div.style.visibility = "visible";
+}
+
 function btn_add_new_env()
 {
 	var i = 0;
@@ -119,7 +125,7 @@ function create_step_form(i)
 	input.setAttribute('id', order);
 	input.setAttribute('name', order);
 	input.setAttribute('type', 'text');
-	input.setAttribute('value', '0');
+	input.setAttribute('value', (i+1));
 	input.setAttribute('class', 'form-control');
 	
 	form_grp.appendChild(input);

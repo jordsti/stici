@@ -14,7 +14,7 @@
 						<span class="sr-only">Toggle navigation</span>
 					</button>
 				
-					<a class="navbar-brand" href="#">Sti::CI</a>
+					<a class="navbar-brand" href="index.php">Sti::CI</a>
 				</div>
 				
 				<div class="navbar-collapse collapse">

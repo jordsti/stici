@@ -8,7 +8,7 @@
 	$workers = $page->workers;
 	?>
 		
-		<div class="container">
+		<div class="container maintable">
 		<?php if(count($workers) == 0)
 		{
 		?>
@@ -17,7 +17,7 @@
 		}
 		?>
 			<h4>Workers(s)</h4>
-			<table class="table table-hover maintable">
+			<table class="table table-hover">
 				<tr>
 					<th>Hostname</th>
 					<th>IP</th>

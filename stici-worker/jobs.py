@@ -1,7 +1,7 @@
 __author__ = 'JordSti'
 import subprocess
 import os
-from build_step import build_step
+from step import step
 import worker
 import stici_exception
 
@@ -21,8 +21,9 @@ class job:
     def run(self):
         pass
 
-class git_fetch_job(job):
+class git_fetch_job(job, step):
     def __init__(self, name, remote_git):
+        step.__init__(self)
         self.name = name
         self.remote_git = remote_git
         self.__env_dict = {}
@@ -34,41 +35,35 @@ class git_fetch_job(job):
         self.__env_dict[name] =  value
 
     def run(self):
+
+        if len(self.__env_dict) == 0:
+            self.__env_dict = os.environ
+
         args = []
-        if self.shell:
-            if self.git_path is not None:
-                args.append(os.path.join(self.git_path, 'git'))
-            else:
-                args.append('git')
+        if self.git_path is not None:
+            args.append(os.path.join(self.git_path, 'git'))
+        else:
+            args.append('git')
 
         if self.clone:
-            args.append("--depth=50")
             args.append('clone')
+            args.append("--depth")
+            args.append("1")
             args.append(self.remote_git)
+            #abs path for cloning
             args.append(self.name)
         else:
             os.chdir(self.name)
             args.append('pull')
 
         self.show_cmd(args)
-        if self.shell:
-            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
-        else:
-            _process = subprocess.Popen(args, executable='git' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
-        line = _process.stdout.readline()
+        #print args
+        #if self.shell:
+        _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
+        #else:
+            #_process = subprocess.Popen(args, executable='git' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
 
-        while len(line) > 0:
-            print line.rstrip('\n')
-            #print "[%s] : %s" (c.executable, line)
-            line = _process.stdout.readline()
-
-        errtxt = ""
-        line = _process.stderr.readline()
-        while len(line) > 0:
-            errtxt += line
-            line = _process.stderr.readline()
-
-        #print "[StdErr] : %s" % (errtxt)
+        self.wait_process(_process)
 
         if self.clone:
             os.chdir(self.name)

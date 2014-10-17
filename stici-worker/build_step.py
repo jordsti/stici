@@ -3,44 +3,21 @@ import subprocess
 import stici_exception
 import os
 import time
-import sys
-import threading
+import shutil
 import Queue
-from threading import Thread
+import step
 
-class AsynchronousFileReader(threading.Thread):
-    '''
-    Helper class to implement asynchronous reading of a file
-    in a separate thread. Pushes read lines on a queue to
-    be consumed in another thread.
-    '''
 
-    def __init__(self, fd, queue):
-        assert isinstance(queue, Queue.Queue)
-        assert callable(fd.readline)
-        threading.Thread.__init__(self)
-        self._fd = fd
-        self._queue = queue
 
-    def run(self):
-        '''The body of the tread: read lines and put them on the queue.'''
-        for line in iter(self._fd.readline, ''):
-            self._queue.put(line)
-
-    def eof(self):
-        '''Check whether there is no more content to expect.'''
-        return not self.is_alive() and self._queue.empty()
-
-class build_step:
+class build_step(step.step):
     (IgnoreReturn) = (1)
 
     def __init__(self, executable, args=[], envs={}, flags=0, timeout=300):
+        step.step.__init__(self)
         self.executable = executable
         self.__env_dict = envs
         self.args = args
         self.flags = flags
-        self.stdout = ""
-        self.stderr = ""
         self.step_id = 0
         self.return_code = 0
         self.timeout = timeout
@@ -77,6 +54,8 @@ class build_step:
                 os.mkdir(self.args[-1])
             except Exception:
                 pass
+        elif 'rm' in self.executable:
+            shutil.rmtree(self.args[-1], True)
         else:
             if len(self.__env_dict) == 0:
                 #wmpty env, getting OS env
@@ -86,34 +65,7 @@ class build_step:
 
 
             started = time.time()
-
-            stdout_queue = Queue.Queue()
-            stdout_reader = AsynchronousFileReader(_process.stdout, stdout_queue)
-            stdout_reader.start()
-            stderr_queue = Queue.Queue()
-            stderr_reader = AsynchronousFileReader(_process.stderr, stderr_queue)
-            stderr_reader.start()
-
-            while not stdout_reader.eof() or not stderr_reader.eof() or _process.poll() is None:
-                while not stdout_queue.empty():
-                    line = stdout_queue.get()
-                    print line.rstrip('\n')
-                    self.stdout += line
-
-
-                while not stderr_queue.empty():
-                    line = stderr_queue.get()
-                    print line.rstrip('\n')
-                    self.stderr += line
-
-                time.sleep(.1)
-
-            stdout_reader.join()
-            stderr_reader.join()
-
-            # Close subprocess' file descriptors.
-            _process.stdout.close()
-            _process.stderr.close()
+            self.wait_process(_process)
 
             self.return_code = _process.returncode
             time_elapsed = time.time() - started

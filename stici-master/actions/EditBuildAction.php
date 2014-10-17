@@ -42,6 +42,14 @@ class EditBuildAction extends CommonAction
 		
 			if(isset($_GET['save']))
 			{
+				if(isset($_POST['target']))
+				{
+					$this->job->target = Job::ParseTarget($_POST['target']);
+				}
+				//saving job
+				
+				DbJob::UpdateTarget($this->job);
+			
 				if(isset($_POST['delete_envs']))
 				{
 					$ids = explode(';', $_POST['delete_envs']);

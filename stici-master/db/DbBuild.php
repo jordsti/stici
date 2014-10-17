@@ -40,10 +40,10 @@ class DbBuild
 		$list_b = array();
 		$con = new DbConnection();
 		
-		$query = "SELECT b.build_id, b.current_id, b.job_id, b.status, b.stamp, b.stamp_end, b.build_number, b.worker_hash, j.job_name FROM builds b INNER JOIN jobs j ON j.job_id = b.job_id ORDER BY build_id DESC LIMIT ?";
+		$query = "SELECT b.build_id, b.current_id, b.job_id, b.status, b.stamp, b.stamp_end, b.build_number, b.worker_hash, j.job_name, j.target FROM builds b INNER JOIN jobs j ON j.job_id = b.job_id ORDER BY build_id DESC LIMIT ?";
 		$st = $con->prepare($query);
 		$st->bind_param("i", $limit);
-		$st->bind_result($b_id, $c_id, $j_id, $status, $stamp, $stamp_end, $b_number, $w_hash, $j_name);
+		$st->bind_result($b_id, $c_id, $j_id, $status, $stamp, $stamp_end, $b_number, $w_hash, $j_name, $target);
 		$st->execute();
 		
 		while($st->fetch())
@@ -58,6 +58,7 @@ class DbBuild
 			$b->buildNumber = $b_number;
 			$b->workerHash = $w_hash;
 			$b->jobName = $j_name;
+			$b->target = $target;
 			
 			$list_b[] = $b;
 		}
@@ -71,10 +72,10 @@ class DbBuild
 		$list = array();
 		$con = new DbConnection();
 		
-		$query = "SELECT build_id, current_id, job_id, status, stamp, stamp_end, build_number, worker_hash FROM builds WHERE job_id = ? ORDER BY build_id DESC LIMIT ?";
+		$query = "SELECT b.build_id, b.current_id, b.job_id, b.status, b.stamp, b.stamp_end, b.build_number, b.worker_hash, j.target FROM builds b JOIN jobs j ON j.job_id = b.job_id WHERE b.job_id = ? ORDER BY b.build_id DESC LIMIT ?";
 		$st = $con->prepare($query);
 		$st->bind_param("ii", $job_id, $limit);
-		$st->bind_result($b_id, $c_id, $j_id, $status, $stamp, $stamp_end, $b_number, $w_hash);
+		$st->bind_result($b_id, $c_id, $j_id, $status, $stamp, $stamp_end, $b_number, $w_hash, $target);
 		$st->execute();
 		
 		while($st->fetch())
@@ -88,6 +89,7 @@ class DbBuild
 			$b->stampEnd = $stamp_end;
 			$b->buildNumber = $b_number;
 			$b->workerHash = $w_hash;
+			$b->target = $target;
 			
 			$list[] = $b;
 		}

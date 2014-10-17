@@ -30,7 +30,12 @@ def url_join(part1, part2):
     return "%s/%s" % (part1, part2);
 
 class stici_worker:
+    #build status
     (Building, Success, Failed) = (0, 1, 2)
+    #os enum
+    (Linux, Windows) = (1, 2)
+
+    #worker page
     (RegisterRequest) = ('worker_register.php')
     (PollJob) = ('worker_pool.php')
     (ClaimJob) = ('worker_claim.php')
@@ -50,10 +55,28 @@ class stici_worker:
         self.workspace = workspace
         self.build_id = 0
         self.status = self.Building
+        self.os = 0
 
+
+    def detect_os(self):
+
+        os_name = platform.system()
+
+        os_name = os_name.lower()
+
+        if os_name == 'windows':
+            self.os = self.Windows
+            print "Worker running on Windows"
+        elif os_name == 'linux':
+            self.os = self.Linux
+            print "Worker running on Linux"
+        else:
+            print "%s OS not supported at the moment" % os_name
+            print "Exiting..."
+            sys.exit()
 
     def run(self):
-
+        self.detect_os()
         self.register()
 
         if not self.registered:
@@ -183,7 +206,7 @@ class stici_worker:
         if not self.registered:
             url = url_join(self.master_url, self.RegisterRequest)
 
-            param = "?hash=%s&hostname=%s" % (self.hash, self.host)
+            param = "?hash=%s&hostname=%s&os=%d" % (self.hash, self.host, self.os)
             u = urllib2.urlopen(url+param)
             rs = u.read()
 
@@ -225,7 +248,9 @@ class stici_worker:
             for l in lines:
                 if len(l) > 0 and ':' in l:
                     rj = remote_job.remote_job(l)
-                    self.polls.append(rj)
+                    if rj.target == self.os:
+                        self.polls.append(rj)
+
 
             if 'None' in rs:
                 print "No job pending..."

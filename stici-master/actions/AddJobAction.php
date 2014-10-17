@@ -16,11 +16,13 @@ class AddJobAction extends CommonAction
 	
 	public function execute()
 	{
-		if(isset($_POST['job_name']) && isset($_POST['remote_git']))
+		if(isset($_POST['job_name']) && isset($_POST['remote_git']) && isset($_POST['target']))
 		{
+			$target = Job::ParseTarget($_POST['target']);
+		
 			require_once("db/DbJob.php");
 			
-			DbJob::AddJob($_POST['job_name'], $_POST['remote_git']);
+			DbJob::AddJob($_POST['job_name'], $_POST['remote_git'], $target);
 			
 		}
 		else

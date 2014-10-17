@@ -11,7 +11,7 @@
 			
 			foreach($pools as $p)
 			{
-				echo "JOB_ID:".$p->jobId.",CURRENT_ID:".$p->id."\n";
+				echo "JOB_ID:".$p->jobId.",CURRENT_ID:".$p->id.",TARGET:".$p->target."\n";
 			}
 			
 			if(count($pools) == 0)

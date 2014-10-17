@@ -21,7 +21,7 @@
 		<div class="container maintable">
 			<h4>Build(s)</h4>
 			<table class="table table-hover">
-				<tr>
+				<tr class="active">
 					<th>Status</th>
 					<th>Build Time</th>
 					<th>Build Number</th>
@@ -31,8 +31,24 @@
 				$builds = $page->getBuilds();
 				foreach($builds as $b)
 				{
+
+				$row_class = "normal_row";
+				
+				if($b->status == Build::$Building)
+				{
+					$row_class = "info";	
+				}
+				else if($b->status == Build::$Success)
+				{
+					$row_class = "success";	
+				}
+				else if($b->status == Build::$Failed)
+				{
+					$row_class = "danger";	
+				}
+				
 			?>
-				<tr>
+				<tr class="<?php echo $row_class; ?>">
 					<td><?php echo $b->getStatusText(); ?></td>
 					<td><?php echo $b->getBuildTime(); ?></td>
 					<td><?php echo $b->buildNumber; ?></td>
@@ -50,7 +66,7 @@
 		<div class="container maintable">
 			<h4>Last job(s)</h4>
 			<table class="table table-hover">
-				<tr>
+				<tr class="active">
 					<th>Job Id</th>
 					<th>Worker Id</th>
 					<th>Status</th>

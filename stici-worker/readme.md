@@ -5,4 +5,4 @@ stici-worker
 
  - Main script with params
  
- - Add BuildNumber, ProjectName to environnements vars
+ - Add BuildNumber, ProjectName to environnements vars -> DONE

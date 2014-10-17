@@ -16,6 +16,7 @@ Create your job after that and open a new worker.
 	- View Build output log
 	- Build status
 	- Worker status
+	- Multi OS Worker Support (Linux and Windows)
 
 #### TO DO
 
@@ -29,4 +30,4 @@ Create your job after that and open a new worker.
 	
 	- Delete job with are your sure prompt
 	
-	- View last build on home page
+	- View last build on home page -> DONE

@@ -55,13 +55,15 @@ class build_step:
         self.stdout += "%s%s\n" % (self.executable, args)
         print self.executable + args
 
-    def do(self):
+    def do(self, stici_job):
 
         args = []
         args.append(self.executable)
         for a in self.args:
             if len(a.rstrip(' ')) > 0:
-                args.append(a)
+                na = a.replace('$BUILDNUMBER$', str(stici_job.build_number))
+                na = na.replace('$NAME$', stici_job.name)
+                args.append(na)
 
         self.print_cmd()
         if 'cd' in self.executable:

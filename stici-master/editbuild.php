@@ -31,6 +31,24 @@
 
 				<div class="panel-body">
 				<form role="form" method="post" action="editbuild.php?job_id=<?php echo $page->getJob()->getId();?>&save">
+					<div id="target">
+					
+					<h4>Target OS</h4>
+					<div class="radio">
+					  <label>
+						<input type="radio" name="target" id="target_windows" value="windows" <?php if($page->getJob()->target == Job::$Windows) { echo 'checked'; } ?>>
+						Windows
+					  </label>
+					</div>
+					<div class="radio">
+					  <label>
+						<input type="radio" name="target" id="target_linux" value="linux" <?php if($page->getJob()->target == Job::$Linux) { echo 'checked'; } ?>>
+						Linux
+					  </label>
+					</div>
+					
+					</div>
+					
 					<div id="envs">
 					<h4>Environnements variables</h4>
 					

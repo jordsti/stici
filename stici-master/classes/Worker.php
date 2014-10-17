@@ -6,6 +6,7 @@ class CurrentJob
 	public $jobId;
 	public $workerId;
 	public $status;
+	public $target;
 	
 	public static $Pending = 0;
 	public static $Running = 1;
@@ -24,6 +25,7 @@ class CurrentJob
 			$this->jobId = $data['job_id'];
 			$this->workerId = $data['worker_id'];
 			$this->status = $data['status'];
+			$this->target = $data['target'];
 		}
 	}
 	
@@ -53,6 +55,7 @@ class Worker
 	public $hostname;
 	public $remoteAddr;
 	public $lastTick;
+	public $os;
 	
 	public static $Idle = 0;
 	public static $Running = 1;
@@ -65,6 +68,7 @@ class Worker
 		$this->hostname = "";
 		$this->remoteAddr = "";
 		$this->lastTick = 0;
+		$this->os = 0;
 	
 		if(count($data) > 0)
 		{

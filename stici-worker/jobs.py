@@ -94,7 +94,7 @@ class stici_job(job):
         for s in self.__steps:
             _step_failed = False
             try:
-                s.do()
+                s.do(self)
             except Exception as e:
                 print e.message
                 _step_failed = True

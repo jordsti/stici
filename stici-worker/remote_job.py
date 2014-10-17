@@ -8,6 +8,7 @@ class remote_job:
         self.job_id = 0
         self.current_id = 0
         self.status = self.Pending
+        self.target = 0
 
         if line is not None:
             self.parseLine(line)
@@ -25,3 +26,5 @@ class remote_job:
                 self.job_id = int(data[1])
             elif data[0] == 'CURRENT_ID':
                 self.current_id = int(data[1])
+            elif data[0] == 'TARGET':
+                self.target = int(data[1])

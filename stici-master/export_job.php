@@ -12,6 +12,7 @@
 			$name = $job->getName();
 			$buildNumber = $job->getBuildNumber();
 			$git = $job->getRemoteGit();
+			$target = $job->target;
 			
 			$envs = DbEnv::GetEnvs($job->getId());
 			$steps = DbBuildStep::GetBuildSteps($job->getId());
@@ -20,6 +21,7 @@
 			$out .= $name."\n";
 			$out .= $buildNumber."\n";
 			$out .= $git."\n";
+			$out .= $target."\n";
 			
 			foreach($envs as $e)
 			{

@@ -18,12 +18,13 @@
 		?>
 			<h4>Workers(s)</h4>
 			<table class="table table-hover">
-				<tr>
+				<tr class="active">
 					<th>Hostname</th>
 					<th>IP</th>
 					<th>Hash</th>
 					<th>Status</th>
 					<th>Last Action</th>
+					<th>Operating System</th>
 				</tr>
 				<?php
 				foreach($workers as $w)
@@ -35,6 +36,7 @@
 						<td><?php echo $w->hash; ?></td>
 						<td><?php echo $w->getStatusText(); ?></td>
 						<td><?php echo $w->getLastAction(); ?></td>
+						<td><img src="<?php echo Job::GetTargetIcon($w->os); ?>"></td>
 					</tr>
 				<?php
 				}

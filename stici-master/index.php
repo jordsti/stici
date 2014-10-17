@@ -11,24 +11,37 @@
 		<div class="container maintable">
 			<h4>Job(s)</h4>
 			<table class="table table-hover">
-				<tr>
+				<tr class="active">
 					<th>Name</th>
 					<th>Status</th>
 					<th>Build Time</th>
 					<th>Build Number</th>
 					<th>Build On</th>
+					<th>Target</th>
 				</tr>
 				<?php
 				$jobs = $page->getJobs();
 				foreach($jobs as $job)
 				{
+					$row_class = "normal_row";
+					
+					if($job->status == Build::$Building)
+					{
+						$row_class = "info";
+					}
+					else if($job->status == Build::$Failed)
+					{
+						$row_class = "danger";
+					}
+					
 				?>
-					<tr>
+					<tr class="<?php echo $row_class; ?>">
 						<td><a href="job.php?job_id=<?php echo $job->getId(); ?>"><?php echo $job->getName(); ?></a></td>
 						<td><?php echo $job->getStatusText(); ?></td>
 						<td><?php echo $job->getName(); ?></td>
 						<td><?php echo $job->getBuildNumber(); ?></td>
 						<td><?php echo $job->getBuildTimeAgo(); ?></td>
+						<td><img src="<?php echo Job::GetTargetIcon($job->target); ?>"></td>
 					</tr>
 				<?php
 				}
@@ -38,23 +51,35 @@
 			
 			<h4>Last builds</h4>
 			<table class="table table-hover">
-				<tr>
+				<tr class="active">
 					<th>Build Number</th>
 					<th>Job</th>
 					<th>Build Time</th>
 					<th>Status</th>
 					<th>-</th>
+					<th>Target</th>
 				</tr>
 			<?php
 			foreach($page->builds as $b)
 			{
+				$row_class = "normal_row";
+					
+				if($b->status == Build::$Building)
+				{
+					$row_class = "info";
+				}
+				else if($b->status == Build::$Failed)
+				{
+					$row_class = "danger";
+				}
 			?>
-				<tr>
+				<tr class="<?php echo $row_class; ?>">
 					<td><a href="viewbuild.php?build_id=<?php echo $b->id; ?>"><?php echo $b->buildNumber; ?></a></td>
 					<td><a href="job.php?job_id=<?php echo $b->jobId; ; ?>"><?php echo $b->jobName; ?><a></td>
 					<td><?php echo $b->getBuildTime(); ?></td>
 					<td><?php echo $b->getStatusText(); ?></td>
 					<td><?php echo $b->getBuildTimeAgo(); ?></td>
+					<td><img src="<?php echo Job::GetTargetIcon($b->target); ?>"></td>
 				</tr>
 			
 			<?php

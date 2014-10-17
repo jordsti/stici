@@ -10,11 +10,11 @@ class DbCurrentJob
 		$list = array();
 		$con = new DbConnection();
 		
-		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE job_id = ? ORDER BY current_id DESC LIMIT ?";
+		$query = "SELECT c.current_id, c.job_id, c.worker_id, c.status, j.target FROM current_jobs c JOIN jobs j ON j.job_id = c.job_id WHERE c.job_id = ? ORDER BY current_id DESC LIMIT ?";
 		
 		$st = $con->prepare($query);
 		$st->bind_param("ii", $job_id, $limit);
-		$st->bind_result($c_id, $j_id, $w_id, $status);
+		$st->bind_result($c_id, $j_id, $w_id, $status, $target);
 		$st->execute();
 		
 		while($st->fetch())
@@ -24,6 +24,7 @@ class DbCurrentJob
 			$cj->jobId = $j_id;
 			$cj->workerId = $w_id;
 			$cj->status = $status;
+			$cj->target = $target;
 			
 			$list[] = $cj;
 		}

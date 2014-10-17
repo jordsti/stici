@@ -13,9 +13,9 @@ class DbWorker
 		DbWorker::CleanWorker();
 		
 		$con = new DbConnection();
-		$query = "SELECT worker_id, worker_hash, worker_status, hostname, remote_addr, last_tick FROM workers ORDER BY last_tick DESC";
+		$query = "SELECT worker_id, worker_hash, worker_status, hostname, remote_addr, last_tick, worker_os FROM workers ORDER BY last_tick DESC";
 		$st = $con->prepare($query);
-		$st->bind_result($w_id, $w_hash, $status, $hostname, $remote_addr, $last_tick);
+		$st->bind_result($w_id, $w_hash, $status, $hostname, $remote_addr, $last_tick, $w_os);
 		
 		$st->execute();
 		
@@ -28,6 +28,7 @@ class DbWorker
 			$w->hostname = $hostname;
 			$w->remoteAddr = $remote_addr;
 			$w->lastTick = $last_tick;
+			$w->os = $w_os;
 			
 			$list[] = $w;
 		}
@@ -188,7 +189,7 @@ class DbWorker
 		return 0;
 	}
 
-	public static function CleanWorker($timeout=300)
+	public static function CleanWorker($timeout=600)
 	{
 		$stamp = time() - $timeout;
 		$con = new DbConnection();
@@ -316,11 +317,11 @@ class DbWorker
 		
 		$status = CurrentJob::$Pending;
 		
-		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE status = ? ORDER BY current_id ASC";
+		$query = "SELECT c.current_id, c.job_id, c.worker_id, c.status, j.target FROM current_jobs c JOIN jobs j ON j.job_id = c.job_id WHERE c.status = ? ORDER BY c.current_id ASC";
 		
 		$st = $con->prepare($query);
 		$st->bind_param("i", $status);
-		$st->bind_result($c_id, $j_id, $w_id, $c_status);
+		$st->bind_result($c_id, $j_id, $w_id, $c_status, $target);
 		$st->execute();
 		
 		while($st->fetch())
@@ -330,6 +331,7 @@ class DbWorker
 			$s->jobId = $j_id;
 			$s->workerId = $w_id;
 			$s->status = $c_status;
+			$s->target = $target;
 			
 			$list[] = $s;
 			
@@ -339,17 +341,17 @@ class DbWorker
 		return $list;
 	}
 
-	public static function Register($hash, $remote_addr, $hostname)
+	public static function Register($hash, $remote_addr, $hostname, $worker_os)
 	{
 		$con = new DbConnection();
 		
-		$query = "INSERT INTO workers (worker_hash, worker_status, hostname, remote_addr, last_tick) VALUES(?, 0, ?, ?, ?)";
+		$query = "INSERT INTO workers (worker_hash, worker_status, hostname, remote_addr, last_tick, worker_os) VALUES(?, 0, ?, ?, ?, ?)";
 		
 		$st = $con->prepare($query);
 		
 		$stamp = time();
 		
-		$st->bind_param("sssi", $hash, $hostname, $remote_addr, $stamp);
+		$st->bind_param("sssii", $hash, $hostname, $remote_addr, $stamp, $worker_os);
 		$st->execute();
 		
 		$con->close();

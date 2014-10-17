@@ -48,6 +48,10 @@ if(file_exists($_FILES["job"]["tmp_name"]))
 		{
 			$git = $lines[$i];
 		}
+		else if($i == 3)
+		{
+			$target = $lines[$i];
+		}
 		else
 		{
 			//steps or envs vars
@@ -95,8 +99,8 @@ if(file_exists($_FILES["job"]["tmp_name"]))
 		}*/
 		
 	//importing job
-	DbJob::AddJob($name, $git);
-	$id = DbJob::GetJobId($name, $git);
+	DbJob::AddJob($name, $git, $target);
+	$id = DbJob::GetJobId($name, $git, $target);
 	
 	$job_obj = DbJob::GetJob($id);
 	

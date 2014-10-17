@@ -14,6 +14,7 @@ class Build
 	public $status;
 	public $workerHash;
 	public $jobName;
+	public $target;
 
 	public function __construct($data=array())
 	{
@@ -25,6 +26,7 @@ class Build
 		$this->stampEnd = 0;
 		$this->workerHash = "";
 		$this->jobName = "";
+		$this->target = 0;
 	}
 	
 	public function getStatusText()

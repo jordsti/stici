@@ -2,16 +2,53 @@
 
 class Job
 {
-	private $id;
-	private $name;
-	private $status;
-	private $buildNumber;
-	private $remoteGit;
+	public $id;
+	public $name;
+	public $status;
+	public $buildNumber;
+	public $remoteGit;
 	public $stamp;
+	public $target;
+	
+	public static $Linux = 1;
+	public static $Windows = 2;
 	
 	public static $Building = 0;
 	public static $Success = 1;
 	public static $Failed = 2;
+	
+	
+	public static function GetTargetIcon($target)
+	{
+		if($target == Job::$Linux)
+		{
+			return "img/linux_icon.png";
+		}
+		else if($target == Job::$Windows)
+		{
+			return "img/win32_icon.png";
+		}
+		
+		return "";
+	}
+	
+	public static function ParseTarget($target)
+	{
+		$target = strtolower($target);
+	
+		if(strcmp($target, 'windows') == 0)
+		{
+			return Job::$Windows;
+		}
+		else if(strcmp($target, 'linux') == 0)
+		{
+			return Job::$Linux;
+		}
+		else
+		{
+			return 0;
+		}
+	}
 	
 	public function __construct($data)
 	{
@@ -21,6 +58,7 @@ class Job
 		$this->buildNumber = $data['build_number'];
 		$this->remoteGit = $data['remote_git'];
 		$this->stamp = 0;
+		$this->target = $data['target'];
 	}
 	
 	public function getStatusText()

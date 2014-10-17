@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 16 Octobre 2014 à 08:51
+-- Généré le :  Ven 17 Octobre 2014 à 19:22
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `job_name` varchar(255) NOT NULL,
   `job_status` int(2) NOT NULL,
   `build_number` int(3) NOT NULL,
+  `target` int(2) NOT NULL,
   PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -127,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `workers` (
   `hostname` varchar(255) NOT NULL,
   `remote_addr` varchar(255) NOT NULL,
   `last_tick` int(25) NOT NULL,
+  `worker_os` int(2) NOT NULL,
   PRIMARY KEY (`worker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

@@ -71,10 +71,10 @@ class build_step:
 
         self.print_cmd()
         if 'cd' in self.executable:
-            os.chdir(self.args[1])
+            os.chdir(self.args[-1])
         elif 'mkdir' in self.executable:
             try:
-                os.mkdir(self.args[0])
+                os.mkdir(self.args[-1])
             except Exception:
                 pass
         else:

@@ -59,8 +59,8 @@ class build_step:
     def do(self, stici_job):
 
         args = []
-        if self.shell:
-            args.append(self.executable)
+        args.append(self.executable)
+
         for a in self.args:
             if len(a.rstrip(' ')) > 0:
                 na = a.replace('$BUILDNUMBER$', str(stici_job.build_number))
@@ -81,7 +81,7 @@ class build_step:
             if self.shell:
                 _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
             else:
-                _process = subprocess.Popen(self.args, executable=self.executable, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=os.environ)
+                _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
 
             started = time.time()
 

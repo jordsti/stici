@@ -35,7 +35,7 @@ class JobAction extends CommonAction
 			{
 				$this->job = $job;
 				$this->jobs = DbCurrentJob::GetCurrentJobs($this->job->getId());
-				$this->builds = DbBuild::GetLastBuild($this->job->getId());
+				$this->builds = DbBuild::GetLastBuildByJob($this->job->getId());
 				$this->title = $job->getName();
 			}
 			

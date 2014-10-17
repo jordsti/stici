@@ -13,7 +13,6 @@ class Build
 	public $stampEnd;
 	public $status;
 	public $workerHash;
-	public $jobName;
 
 	public function __construct($data=array())
 	{
@@ -24,7 +23,6 @@ class Build
 		$this->status = 0;
 		$this->stampEnd = 0;
 		$this->workerHash = "";
-		$this->jobName = "";
 	}
 	
 	public function getStatusText()
@@ -70,39 +68,6 @@ class Build
 			$sec = str_pad($sec, 2, '0', STR_PAD_LEFT);
 			
 			return $min."m".$sec."s";
-		}
-		
-	}
-	
-	public function getBuildTimeAgo()
-	{	
-		if($this->stampEnd == 0)
-		{
-			return "";
-		}
-		
-		$stamp = time() - $this->stampEnd;
-	
-		$sec = $stamp % 60;
-		$min = floor($stamp / 60);
-		$h = floor($min / 60);
-		$d = floor($h / 24);
-		
-		if($stamp < 60)
-		{
-			return $sec." seconds ago";
-		}
-		else if($min < 60)
-		{
-			return $min." minutes ago";
-		}
-		else if($h < 24)
-		{
-			return $h." hours ago";
-		}
-		else
-		{
-			return $d." days ago";
 		}
 		
 	}

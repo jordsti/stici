@@ -35,33 +35,6 @@
 				?>
 					
 			</table>
-			
-			<h4>Last builds</h4>
-			<table class="table table-hover">
-				<tr>
-					<th>Build Number</th>
-					<th>Job</th>
-					<th>Build Time</th>
-					<th>Status</th>
-					<th>-</th>
-				</tr>
-			<?php
-			foreach($page->builds as $b)
-			{
-			?>
-				<tr>
-					<td><a href="viewbuild.php?build_id=<?php echo $b->id; ?>"><?php echo $b->buildNumber; ?></a></td>
-					<td><a href="job.php?job_id=<?php echo $b->jobId; ; ?>"><?php echo $b->jobName; ?><a></td>
-					<td><?php echo $b->getBuildTime(); ?></td>
-					<td><?php echo $b->getStatusText(); ?></td>
-					<td><?php echo $b->getBuildTimeAgo(); ?></td>
-				</tr>
-			
-			<?php
-			}
-			?>			
-			</table>
-			
 		</div>
 <?php
 	require_once("footer.php");

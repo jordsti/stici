@@ -19,8 +19,6 @@ Create your job after that and open a new worker.
 
 #### TO DO
 
-	- possiblity to schedule build, (per hour, per days, etc..)
-
 	- Notification system between page (Notify errors and success)
 	
 	- File repository for uploaded build

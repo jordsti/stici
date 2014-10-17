@@ -40,8 +40,8 @@ class git_fetch_job(job):
             args.append('git')
 
         if self.clone:
-            args.append('clone')
             args.append("--depth=50")
+            args.append('clone')
             args.append(self.remote_git)
             args.append(self.name)
         else:

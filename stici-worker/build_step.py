@@ -79,9 +79,10 @@ class build_step:
                 pass
         else:
             if self.shell:
-                _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
+                _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
             else:
                 _process = subprocess.Popen(self.args, executable=self.executable, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=os.environ)
+
             started = time.time()
 
             stdout_queue = Queue.Queue()

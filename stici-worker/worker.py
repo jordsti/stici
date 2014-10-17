@@ -154,8 +154,8 @@ class stici_worker:
                     from build_step import build_step
                     bs = build_step(data[0], data[1].split(';'), job.get_env(), int(data[2]))
                     bs.step_id = int(data[3])
-                    if self.os == self.Linux:
-                        bs.shell = False
+                    #if self.os == self.Linux:
+                    #    bs.shell = False
 
                     job.push_step(bs)
 

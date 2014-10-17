@@ -31,6 +31,49 @@
 
 				<div class="panel-body">
 				<form role="form" method="post" action="editbuild.php?job_id=<?php echo $page->getJob()->getId();?>&save">
+					<h4>Job General settings</h4>
+					<div id="flags">
+						<div class="checkbox">
+							<label>
+								<?php
+								if($page->job->testFlags(Job::$Win32Build))
+								{
+								?>
+								<input type="checkbox" value="true" id="win32build" name="win32build" checked>
+								<?php
+								}
+								else
+								{
+								?>
+								<input type="checkbox" value="true" id="win32build" name="win32build">
+								<?php
+								}
+								?>
+								Win32 Build
+							</label>
+						</div>
+						
+						<div class="checkbox">
+							<label>
+								<?php
+								if($page->job->testFlags(Job::$LinuxBuild))
+								{
+								?>
+								<input type="checkbox" value="true" id="linuxbuild" name="linuxbuild" checked>
+								<?php
+								}
+								else
+								{
+								?>
+								<input type="checkbox" value="true" id="linuxbuild" name="linuxbuild">
+								<?php
+								}
+								?>
+								Linux Build
+							</label>
+						</div>
+					</div>
+					
 					<div id="envs">
 					<h4>Environnements variables</h4>
 					

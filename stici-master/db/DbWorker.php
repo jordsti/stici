@@ -316,11 +316,11 @@ class DbWorker
 		
 		$status = CurrentJob::$Pending;
 		
-		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE status = ? ORDER BY current_id ASC";
+		$query = "SELECT current_id, job_id, worker_id, status, flags FROM current_jobs WHERE status = ? ORDER BY current_id ASC";
 		
 		$st = $con->prepare($query);
 		$st->bind_param("i", $status);
-		$st->bind_result($c_id, $j_id, $w_id, $c_status);
+		$st->bind_result($c_id, $j_id, $w_id, $c_status, $j_flags);
 		$st->execute();
 		
 		while($st->fetch())
@@ -330,6 +330,7 @@ class DbWorker
 			$s->jobId = $j_id;
 			$s->workerId = $w_id;
 			$s->status = $c_status;
+			$s->flags = $j_flags;
 			
 			$list[] = $s;
 			

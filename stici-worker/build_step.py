@@ -59,23 +59,29 @@ class build_step:
     def do(self, stici_job):
 
         args = []
-        args.append(self.executable)
+        if self.shell:
+            args.append(self.executable)
         for a in self.args:
             if len(a.rstrip(' ')) > 0:
                 na = a.replace('$BUILDNUMBER$', str(stici_job.build_number))
                 na = na.replace('$NAME$', stici_job.name)
                 args.append(na)
 
+        self.args = args
+
         self.print_cmd()
         if 'cd' in self.executable:
-            os.chdir(self.args[0])
+            os.chdir(self.args[1])
         elif 'mkdir' in self.executable:
             try:
                 os.mkdir(self.args[0])
             except Exception:
                 pass
         else:
-            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
+            if self.shell:
+                _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
+            else:
+                _process = subprocess.Popen(self.args, executable=self.executable, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
             started = time.time()
 
             stdout_queue = Queue.Queue()

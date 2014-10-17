@@ -78,6 +78,9 @@ class build_step:
             except Exception:
                 pass
         else:
+            if len(self.__env_dict) == 0:
+                #wmpty env, getting OS env
+                self.__env_dict = os.environ
 
             _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
 

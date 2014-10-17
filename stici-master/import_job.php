@@ -99,30 +99,39 @@ if(file_exists($_FILES["job"]["tmp_name"]))
 		}*/
 		
 	//importing job
-	DbJob::AddJob($name, $git, $target);
-	$id = DbJob::GetJobId($name, $git, $target);
+	$job_id = DbJob::GetJobByName($name);
 	
-	$job_obj = DbJob::GetJob($id);
-	
-	$job_obj->setBuildNumber($buildNumber);
-	
-	DbJob::UpdateJob($job_obj);
-	
-	//adding envs
-	foreach($envs as $e)
+	if($job_id == 0)
 	{
-		$e->setJobId($id);
+		
+		DbJob::AddJob($name, $git, $target);
+		$id = DbJob::GetJobId($name, $git, $target);
+		
+		$job_obj = DbJob::GetJob($id);
+		
+		$job_obj->setBuildNumber($buildNumber);
+		
+		DbJob::UpdateJob($job_obj);
+		
+		//adding envs
+		foreach($envs as $e)
+		{
+			$e->setJobId($id);
+		}
+		
+		foreach($steps as $s)
+		{
+			$s->setJobId($id);
+		}
+		
+		
+		DbBuildStep::SaveBuildSteps($steps);
+		DbEnv::SaveEnvs($envs);
 	}
-	
-	foreach($steps as $s)
+	else
 	{
-		$s->setJobId($id);
+		//todo error handling
 	}
-	
-	
-	DbBuildStep::SaveBuildSteps($steps);
-	DbEnv::SaveEnvs($envs);
-	
 	
 	header('location: index.php');
 }

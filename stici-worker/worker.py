@@ -43,7 +43,7 @@ class stici_worker:
     (BuildEnded) = ('worker_end.php')
     (BuildStepLog) = ('worker_log.php')
 
-    def __init__(self, master_url, git_path, workspace="workspace"):
+    def __init__(self, master_url, git_path=None, workspace="workspace"):
         self.host = platform.node()
         self.master_url = master_url
         self.hash = generate_worker_hash()
@@ -284,6 +284,8 @@ if __name__ == '__main__':
 
     print "Sti::CI Worker"
     _workspace = "workspace"
+    _master_url = "http://localhost/stici/stici-master"
+    _git_path = None
     ia = 0
     ma = len(sys.argv)
     while ia < ma:
@@ -293,9 +295,17 @@ if __name__ == '__main__':
             ia += 1
             if ia < ma:
                 _workspace = sys.argv[ia]
+        elif arg == '-git':
+            ia += 1
+            if ia < ma:
+                _git_path = sys.argv[ia]
+        elif arg == '-url':
+            ia += 1
+            if ia < ma:
+                _master_url = sys.argv[ia]
 
         ia += 1
 
 
-    worker = stici_worker('http://localhost/stici/stici-master', "C:\\Program Files (x86)\\Git\\bin", _workspace)
+    worker = stici_worker(_master_url, _git_path, _workspace)
     worker.run()

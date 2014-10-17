@@ -16,6 +16,25 @@ class DbJob
 		$con->close();
 	}
 	
+	public static function GetJobByName($job_name)
+	{
+		$id = 0;
+		$con = new DbConnection();
+		$query = "SELECT job_id FROM jobs WHERE job_name = ?";
+		$st = $con->prepare($query);
+		$st->bind_param("s", $job_name);
+		$st->bind_result($job_id);
+		$st->execute();
+		
+		if($st->fetch())
+		{
+			$id = $job_id;
+		}
+		
+		$con->close();
+		return $id;
+	}
+	
 	public static function GetJobId($job_name, $remote_git, $target)
 	{
 		$id = 0;

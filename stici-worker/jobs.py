@@ -28,6 +28,7 @@ class git_fetch_job(job):
         self.__env_dict = {}
         self.clone = True
         self.git_path = None
+        self.shell = True
 
     def set_env(self, name, value):
         self.__env_dict[name] =  value
@@ -49,7 +50,8 @@ class git_fetch_job(job):
             args.append('pull')
 
         self.show_cmd(args)
-        _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+        _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
         line = _process.stdout.readline()
 
         while len(line) > 0:

@@ -44,6 +44,7 @@ class build_step:
         self.step_id = 0
         self.return_code = 0
         self.timeout = timeout
+        self.shell = True
 
     def test_flags(self, flags):
         return self.flags & flags
@@ -74,7 +75,7 @@ class build_step:
             except Exception:
                 pass
         else:
-            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=self.__env_dict)
+            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
             started = time.time()
 
             stdout_queue = Queue.Queue()

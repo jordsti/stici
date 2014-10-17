@@ -141,6 +141,9 @@ class stici_worker:
                 elif l.startswith('Git='):
                     git_job = jobs.git_fetch_job(job.name, l[4:])
                     git_job.git_path = self.git_path
+                    if self.os == self.Linux:
+                        git_job.shell = False
+
                 elif l.startswith('ENV+'):
                     envl = l[4:]
                     data = envl.split('=')
@@ -151,6 +154,9 @@ class stici_worker:
                     from build_step import build_step
                     bs = build_step(data[0], data[1].split(';'), job.get_env(), int(data[2]))
                     bs.step_id = int(data[3])
+                    if self.os == self.Linux:
+                        bs.shell = False
+
                     job.push_step(bs)
 
                 il += 1

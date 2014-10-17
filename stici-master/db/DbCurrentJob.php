@@ -10,11 +10,11 @@ class DbCurrentJob
 		$list = array();
 		$con = new DbConnection();
 		
-		$query = "SELECT current_id, job_id, worker_id, status, flags FROM current_jobs WHERE job_id = ? ORDER BY current_id DESC LIMIT ?";
+		$query = "SELECT current_id, job_id, worker_id, status FROM current_jobs WHERE job_id = ? ORDER BY current_id DESC LIMIT ?";
 		
 		$st = $con->prepare($query);
 		$st->bind_param("ii", $job_id, $limit);
-		$st->bind_result($c_id, $j_id, $w_id, $status, $j_flags);
+		$st->bind_result($c_id, $j_id, $w_id, $status);
 		$st->execute();
 		
 		while($st->fetch())
@@ -24,7 +24,6 @@ class DbCurrentJob
 			$cj->jobId = $j_id;
 			$cj->workerId = $w_id;
 			$cj->status = $status;
-			$cj->flags = $j_flags;
 			
 			$list[] = $cj;
 		}
@@ -57,31 +56,14 @@ class DbCurrentJob
 		$con->close();
 		
 		if($launch)
-		{	
-			require_once("db/DbJob.php");
-			$job = DbJob::GetJob($job_id);
-			$flag_win32 = Job::$Win32Build;
-			$flag_linux = Job::$LinuxBuild;
-			if($job->testFlags($flag_win32))
-			{
-				$con = new DbConnection();	
-				$query = "INSERT INTO current_jobs (job_id, status, flags) VALUES (?, ?, ?)";
-				$st = $con->prepare($query);
-				$st->bind_param("iii", $job_id, $pending, $flag_win32);
-				$st->execute();
-				$con->close();
-			}
+		{
+			$con = new DbConnection();
 			
-			//insert two job if we need multios
-			if($job->testFlags($flag_linux))
-			{
-				$con = new DbConnection();	
-				$query = "INSERT INTO current_jobs (job_id, status, flags) VALUES (?, ?, ?)";
-				$st = $con->prepare($query);
-				$st->bind_param("iii", $job_id, $pending, $flag_linux);
-				$st->execute();
-				$con->close();
-			}
+			$query = "INSERT INTO current_jobs (job_id, status) VALUES (?, ?)";
+			$st = $con->prepare($query);
+			$st->bind_param("ii", $job_id, $pending);
+			$st->execute();
+			$con->close();
 		}
 	}
 }

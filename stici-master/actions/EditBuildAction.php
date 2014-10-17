@@ -10,10 +10,10 @@ require_once("classes/Env.php");
 
 class EditBuildAction extends CommonAction
 {
-	public $errors;
-	public $job;
-	public $steps;
-	public $envs;
+	private $errors;
+	private $job;
+	private $steps;
+	private $envs;
 	
 	public function __construct()
 	{
@@ -42,21 +42,6 @@ class EditBuildAction extends CommonAction
 		
 			if(isset($_GET['save']))
 			{
-				$this->job->flags = 0;
-				if(isset($_POST['win32build']))
-				{
-					$this->job->addFlags(Job::$Win32Build);
-				}
-				
-				if(isset($_POST['linuxbuild']))
-				{
-					$this->job->addFlags(Job::$LinuxBuild);
-				}
-
-
-				//saving flags
-				DbJob::SaveFlags($this->job);
-			
 				if(isset($_POST['delete_envs']))
 				{
 					$ids = explode(';', $_POST['delete_envs']);

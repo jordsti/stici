@@ -2,17 +2,12 @@
 
 class Job
 {
-	public $id;
-	public $name;
-	public $status;
-	public $buildNumber;
-	public $remoteGit;
+	private $id;
+	private $name;
+	private $status;
+	private $buildNumber;
+	private $remoteGit;
 	public $stamp;
-	public $flags;
-	
-	
-	public static $Win32Build = 1;
-	public static $LinuxBuild = 2;
 	
 	public static $Building = 0;
 	public static $Success = 1;
@@ -26,24 +21,6 @@ class Job
 		$this->buildNumber = $data['build_number'];
 		$this->remoteGit = $data['remote_git'];
 		$this->stamp = 0;
-		$this->flags = $data['flags'];
-	}
-	
-	public function addFlags($flag)
-	{
-		$this->flags = $this->flags | $flag;
-	}
-	
-	public function removeFlags($flag)
-	{
-		$this->flags = $this->flags ^ $flag;
-	}
-	
-	public function testFlags($flag)
-	{
-		$if = $this->flags & $flag;
-		return ($if == $flag);
-		
 	}
 	
 	public function getStatusText()

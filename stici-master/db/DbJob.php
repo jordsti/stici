@@ -7,7 +7,7 @@ class DbJob
 	public static function AddJob($job_name, $remote_git)
 	{
 		$con = new DbConnection();
-		$query = "INSERT INTO jobs (job_name, job_status, build_number, remote_git, flags) VALUES(?,0,0,?,0)";
+		$query = "INSERT INTO jobs (job_name, job_status, build_number, remote_git) VALUES(?,0,0,?)";
 		$st = $con->prepare($query);
 		
 		$st->bind_param("ss", $job_name, $remote_git);
@@ -54,11 +54,11 @@ class DbJob
 	{
 		$job = 0;
 		$con = new DbConnection();
-		$query = "SELECT job_id, job_name, job_status, build_number, remote_git, flags FROM jobs WHERE job_id = ?";
+		$query = "SELECT job_id, job_name, job_status, build_number, remote_git FROM jobs WHERE job_id = ?";
 		$st = $con->prepare($query);
 		
 		$st->bind_param('i', $job_id);
-		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git, $j_flags);
+		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git);
 		
 		$st->execute();
 		
@@ -69,8 +69,7 @@ class DbJob
 				'name' => $j_name,
 				'status' => $j_status,
 				'build_number' => $j_number,
-				'remote_git' => $j_git,
-				'flags' => $j_flags
+				'remote_git' => $j_git
 			);
 			
 			$job = new Job($data);
@@ -81,29 +80,14 @@ class DbJob
 		return $job;
 	}
 	
-	public static function SaveFlags($job)
-	{
-		if($job->getId() != 0)
-		{
-			$job_id = $job->getId();
-			$flags = $job->flags;
-			$con = new DbConnection();
-			$query = "UPDATE jobs SET flags = ? WHERE job_id = ?";
-			$st = $con->prepare($query);
-			$st->bind_param("ii", $flags, $job_id);
-			$st->execute();
-			$con->close();
-		}
-	}
-	
 	public static function GetJobs()
 	{
 		$list = array();
 		$con = new DbConnection();
-		$query = "SELECT * FROM (SELECT j.job_id, j.job_name, b.status, j.build_number, j.remote_git, b.stamp_end, j.flags FROM jobs j LEFT JOIN builds b ON b.job_id = j.job_id ORDER BY b.build_id DESC) t1 GROUP BY job_id ORDER BY stamp_end DESC";
+		$query = "SELECT * FROM (SELECT j.job_id, j.job_name, b.status, j.build_number, j.remote_git, b.stamp_end FROM jobs j LEFT JOIN builds b ON b.job_id = j.job_id ORDER BY b.build_id DESC) t1 GROUP BY job_id ORDER BY stamp_end DESC";
 		$st = $con->prepare($query);
 		
-		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git, $stamp, $j_flags);
+		$st->bind_result($j_id, $j_name, $j_status, $j_number, $j_git, $stamp);
 
 		$st->execute();
 		
@@ -114,8 +98,7 @@ class DbJob
 				'name' => $j_name,
 				'status' => $j_status,
 				'build_number' => $j_number,
-				'remote_git' => $j_git,
-				'flags' => $j_flags
+				'remote_git' => $j_git
 			);
 			
 			$j = new Job($data);

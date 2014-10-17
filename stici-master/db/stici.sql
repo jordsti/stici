@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 17 Octobre 2014 à 06:44
+-- Généré le :  Jeu 16 Octobre 2014 à 08:51
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `builds` (
   `build_number` int(2) NOT NULL,
   `worker_hash` varchar(64) NOT NULL,
   PRIMARY KEY (`build_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `buildsteps_logs` (
   `stderr` text NOT NULL,
   `return_code` int(11) NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -82,7 +82,6 @@ CREATE TABLE IF NOT EXISTS `current_jobs` (
   `job_id` int(2) NOT NULL,
   `worker_id` int(2) NOT NULL,
   `status` int(2) NOT NULL,
-  `flags` int(2) NOT NULL,
   PRIMARY KEY (`current_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -112,7 +111,6 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `job_name` varchar(255) NOT NULL,
   `job_status` int(2) NOT NULL,
   `build_number` int(3) NOT NULL,
-  `flags` int(2) NOT NULL,
   PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -130,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `workers` (
   `remote_addr` varchar(255) NOT NULL,
   `last_tick` int(25) NOT NULL,
   PRIMARY KEY (`worker_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

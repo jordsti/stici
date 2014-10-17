@@ -35,11 +35,11 @@ class git_fetch_job(job):
 
     def run(self):
         args = []
-
-        if self.git_path is not None:
-            args.append(os.path.join(self.git_path, 'git'))
-        else:
-            args.append('git')
+        if self.shell:
+            if self.git_path is not None:
+                args.append(os.path.join(self.git_path, 'git'))
+            else:
+                args.append('git')
 
         if self.clone:
             args.append("--depth=50")
@@ -51,14 +51,10 @@ class git_fetch_job(job):
             args.append('pull')
 
         self.show_cmd(args)
-
-        cmd = ""
-        for a in args:
-            if len(a) > 0:
-                cmd += a + " "
-
-        _process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
+        if self.shell:
+            _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
+        else:
+            _process = subprocess.Popen(args, executable='git' ,stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
         line = _process.stdout.readline()
 
         while len(line) > 0:

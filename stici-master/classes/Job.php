@@ -71,6 +71,11 @@ class Job
 	
 	public function getBuildTimeAgo()
 	{
+		if($this->stamp == 0)
+		{
+			return "";
+		}
+	
 		$stamp = time() - $this->stamp;
 	
 		$sec = $stamp % 60;

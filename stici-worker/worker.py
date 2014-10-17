@@ -134,7 +134,8 @@ class stici_worker:
                     data = l.split(':')
                     self.build_id = int(data[2])
                     job = jobs.stici_job(self, data[1], int(data[2]))
-                    job.set_env('SystemRoot', os.environ['SystemRoot'])
+                    if self.os == self.Windows:
+                        job.set_env('SystemRoot', os.environ['SystemRoot'])
                 elif l.startswith('BuildNumber:'):
                     job.build_number = int(l[12:])
                 elif l.startswith('Git='):

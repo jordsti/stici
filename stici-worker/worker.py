@@ -271,6 +271,6 @@ if __name__ == '__main__':
 
         ia += 1
 
-
+    #print platform.system()
     worker = stici_worker('http://localhost/stici/stici-master', "C:\\Program Files (x86)\\Git\\bin", _workspace)
     worker.run()

@@ -52,7 +52,12 @@ class git_fetch_job(job):
 
         self.show_cmd(args)
 
-        _process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
+        cmd = ""
+        for a in args:
+            if len(a) > 0:
+                cmd += a + " "
+
+        _process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
         line = _process.stdout.readline()
 

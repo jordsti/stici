@@ -78,10 +78,9 @@ class build_step:
             except Exception:
                 pass
         else:
-            if self.shell:
-                _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
-            else:
-                _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell)
+
+            _process = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=self.shell, env=self.__env_dict)
+
 
             started = time.time()
 

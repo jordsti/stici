@@ -1,3 +1,4 @@
+
 function import_job()
 {
 	var div = document.getElementById('import_form');

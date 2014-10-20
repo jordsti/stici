@@ -6,6 +6,47 @@ require_once("classes/Group.php");
 
 class DbUser
 {
+	public static function AddUser($username, $password, $hashtype, $email)
+	{
+		$con = new DbConnection();
+		$query = "INSERT INTO users (username, password, hash_type, email, stamp) VALUES (?, ?, ?, ?, ?)";
+		$stamp = time();
+		$st = $con->prepare($query);
+		$st->bind_param("ssssi", $username, $password, $hashtype, $email, $stamp);
+		
+		$st->execute();
+		
+		$con->close();
+	}
+
+	public static function GetUsers()
+	{
+		$list = array();
+		//we dont need groups for login
+		$con = new DbConnection();
+		
+		$query = "SELECT user_id, username, password, hash_type, email, stamp FROM users ORDER BY user_id ASC";
+		$st = $con->prepare($query);
+		$st->bind_result($u_id, $u_name, $u_pass, $u_hash, $u_email, $u_stamp);
+		$st->execute();
+		
+		while($st->fetch())
+		{
+			$user = new User();
+			$user->id = $u_id;
+			$user->username = $u_name;
+			$user->password = $u_pass;
+			$user->hashType = $u_hash;
+			$user->email = $u_email;
+			$user->stamp = $u_stamp;
+			$list[] = $user;
+		}
+		
+		$con->close();
+		
+		return $list;
+	}
+
 	public static function GetUserById($user_id)
 	{
 		$user = new User();

@@ -13,6 +13,7 @@ function GetTimeAgo($stamp_end)
 	$min = floor($stamp / 60);
 	$h = floor($min / 60);
 	$d = floor($h / 24);
+	$y = floor($d / 365);
 	
 	if($stamp < 60)
 	{
@@ -26,9 +27,13 @@ function GetTimeAgo($stamp_end)
 	{
 		return $h." hours ago";
 	}
-	else
+	else if($d < 360)
 	{
 		return $d." days ago";
+	}
+	else
+	{
+		return $y." years ago";
 	}
 }
 

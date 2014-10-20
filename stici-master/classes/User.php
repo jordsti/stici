@@ -21,6 +21,12 @@ class User
 		$this->groups = array();
 	}
 	
+	public function createdOn()
+	{
+		require_once("classes/utils.php");
+		return GetTimeAgo($this->stamp);
+	}
+	
 	public function testFlags($flag)
 	{
 		foreach($this->groups as $g)

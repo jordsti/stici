@@ -196,8 +196,12 @@ INSERT INTO `users` (`username`, `password`, `hash_type`, `email`, `stamp`) VALU
 ('admin', 'admin', 'clear', 'admin@localhost.com', 0);
 
 INSERT INTO `groups` (`group_name`, `flags`) VALUES
-('Guest', 537),
-('Admin', 1023);
+('Guest', 1),
+('Admin', 4095),
+('User', 157);
+
+INSERT INTO `users_groups` (`group_id`, `user_id`) VALUES
+(2, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

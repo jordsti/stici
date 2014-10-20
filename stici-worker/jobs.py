@@ -81,6 +81,7 @@ class stici_job(job):
         self.__env_dict = {}
         self.__steps = []
         self.flags = 0
+        self.archives = []
 
     def set_env(self, name, value):
         self.__env_dict[name] = value

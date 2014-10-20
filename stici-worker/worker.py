@@ -42,6 +42,7 @@ class stici_worker:
     (StartBuild) = ('worker_start.php')
     (BuildEnded) = ('worker_end.php')
     (BuildStepLog) = ('worker_log.php')
+    (Upload) = ('worker_upload.php')
 
     def __init__(self, master_url, git_path=None, workspace="workspace"):
         self.host = platform.node()
@@ -293,6 +294,10 @@ if __name__ == '__main__':
     _workspace = "workspace"
     _master_url = "http://localhost/stici/stici-master"
     _git_path = None
+
+    if platform.system() == 'Windows':
+        _git_path = 'C:\\Program Files (x86)\\Git\\bin'
+    
     ia = 0
     ma = len(sys.argv)
     while ia < ma:

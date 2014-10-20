@@ -4,7 +4,6 @@ import stici_exception
 import os
 import time
 import shutil
-import Queue
 import step
 
 
@@ -47,15 +46,33 @@ class build_step(step.step):
         self.args = args
 
         self.print_cmd()
-        if 'cd' in self.executable:
+        if 'cd' == self.executable:
             os.chdir(self.args[-1])
-        elif 'mkdir' in self.executable:
+        elif 'mkdir' == self.executable:
             try:
                 os.mkdir(self.args[-1])
             except Exception:
                 pass
-        elif 'rm' in self.executable:
+        elif 'rm' == self.executable:
             shutil.rmtree(self.args[-1], True)
+        elif 'zipdir' == self.executable:
+            zip_path = self.args[-1]
+            archives = []
+
+            for f in os.listdir(zip_path):
+                if os.path.isdir(os.path.join(zip_path, f)):
+                    archive_name = stici_job.name + "-"
+                    archive_name += f
+                    archive_name + ".zip"
+                    bname = os.path.join(os.getcwd(), archive_name)
+
+                    root_dir = os.path.join(zip_path, f)
+
+                    shutil.make_archive(bname, "zip", root_dir)
+                    archives.append(bname)
+
+            print archives
+
         else:
             if len(self.__env_dict) == 0:
                 #wmpty env, getting OS env

@@ -4,14 +4,11 @@
 	$page->execute();
 	require_once("header.php");
 	
-	//build menu ??
-	#require_once("job_sidemenu.php");
 ?>
 	<div class="sidemenu">
 		<h4>Menu</h4>
-		<a class="btn btn-default" href="addjob.php">Add job</a>
-		<a class="btn btn-default">Browse Workspace</a>
-		<a class="btn btn-default" href="workers.php">View Workers</a>
+		<a class="btn btn-default" href="job.php?job_id=<?php echo $page->job->id; ?>">View job</a>
+		<a class="btn btn-default" href="workers.php">Delete this build</a>
 	</div>
 
 

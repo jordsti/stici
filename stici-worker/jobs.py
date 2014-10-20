@@ -4,6 +4,7 @@ import os
 from step import step
 import worker
 import stici_exception
+import shutil
 
 class job:
 

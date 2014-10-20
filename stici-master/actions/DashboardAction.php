@@ -12,7 +12,7 @@ class DashboardAction extends CommonAction
 	public function __construct()
 	{
 		$this->builds = array();
-		parent::__construct("Dashboard");
+		parent::__construct("Dashboard", Group::$ViewDash);
 	}
 	
 	public function execute()

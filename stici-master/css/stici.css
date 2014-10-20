@@ -32,6 +32,11 @@ h4 .content {
 	visibility: hidden;
 }
 
+.loginform
+{
+	width: 40%;
+}
+
 .footer
 {
 	margin: auto;

@@ -4,7 +4,6 @@ require_once("actions/CommonAction.php");
 
 class JobAction extends CommonAction
 {
-	private $errors;
 	private $job;
 	private $jobs;
 	private $builds;
@@ -14,8 +13,7 @@ class JobAction extends CommonAction
 		$this->builds = array();
 		$this->job = 0;
 		$this->jobs = array();
-		$this->errors = array();
-		parent::__construct("Job");
+		parent::__construct("Job", Group::$ViewJob);
 	}
 	
 	public function execute()

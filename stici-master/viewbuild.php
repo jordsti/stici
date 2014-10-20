@@ -27,6 +27,40 @@
 					<td><?php echo $page->build->buildNumber; ?></td>
 				</tr>
 			</table>
+			
+			<h4>File(s)</h4>
+			<?php 
+			if($page->testGroupFlags(Group::$ViewFile))
+			{
+			
+			?>
+			<table class="table table-hover">
+				<tr>
+					<th>Filename</th>
+					<th>Size</th>
+					<th>Hash</th>
+					<th>Uploaded</th>
+					<th>-</th>
+				</tr>
+			<?php 
+			foreach($page->files as $f)
+			{
+			?>
+				<tr>
+					<td><?php echo $f->filename; ?></td>
+					<td><?php echo $f->size(); ?></td>
+					<td><?php echo $f->hash; ?></td>
+					<td><?php echo $f->timeAgo(); ?></td>
+					<td><a class="btn btn-default" href="download_file.php?file_id=<?php echo $f->id; ?>">Download</a></td>
+				</tr>
+			<?php 
+			}
+			?>
+			</table>
+			
+			<?php 
+			}
+			?>
 		
 			<h4>Steps</h4>
 			

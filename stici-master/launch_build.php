@@ -1,13 +1,4 @@
 <?php
-
-require_once("db/DbCurrentJob.php");
-
-if(isset($_GET['job_id']))
-{
-	DbCurrentJob::LaunchBuild($_GET['job_id']);
-	header('location: job.php?job_id='.$_GET['job_id']);
-}
-else
-{
-	header('location: index.php');
-}
+require_once("actions/LaunchBuildAction.php");
+$page = new LaunchBuildAction();
+$page->execute();

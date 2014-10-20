@@ -10,7 +10,6 @@ require_once("classes/Env.php");
 
 class EditBuildAction extends CommonAction
 {
-	private $errors;
 	private $job;
 	private $steps;
 	private $envs;
@@ -18,9 +17,8 @@ class EditBuildAction extends CommonAction
 	public function __construct()
 	{
 	
-		$this->errors = array();
 		$this->steps = array();
-		parent::__construct("Edit build");
+		parent::__construct("Edit build", Group::$EditBuild);
 	}
 	
 	public function execute()

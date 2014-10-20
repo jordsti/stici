@@ -19,8 +19,29 @@
 				
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
+						<?php 
+						if($page->testGroupFlags(Group::$ViewDash))
+						{
+						?>
 						<li><a href="index.php">Dashboard</a></li>
+						<?php
+						}
+						?>
 						<li><a href="settings.php">Settings</a></li>
+						<?php 
+						if($page->isLogged())
+						{
+						?>
+						<li><a href="logout.php">Log out</a></li>
+						<?php
+						}
+						else 
+						{
+						?>
+						<li><a href="login.php">Sign in</a></li>
+						<?php
+						}
+						?>
 					</ul>
 				</div>
 				

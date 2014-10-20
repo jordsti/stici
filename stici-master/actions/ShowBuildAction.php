@@ -4,19 +4,22 @@ require_once("actions/CommonAction.php");
 require_once("db/DbBuild.php");
 require_once("db/DbBuildStep.php");
 require_once("db/DbJob.php");
+require_once("db/DbBuildFile.php");
 
 class ShowBuildAction extends CommonAction
 {
 	public $logs;
 	public $build;
 	public $job;
-
+	public $files;
+	
 	public function __construct()
 	{
 		$this->logs = 0;
 		$this->build = 0;
 		$this->job = 0;
-		parent::__construct("Build Logs");
+		$this->files = array();
+		parent::__construct("Build Logs", Group::$ViewBuild);
 	}
 	
 	public function execute()
@@ -38,6 +41,13 @@ class ShowBuildAction extends CommonAction
 				$this->title = $this->job->getName(). " Build #".$this->build->buildNumber;
 				
 				$this->logs = DbBuildStep::GetStepLogs($this->build->id);
+				
+				if($this->testGroupFlags(Group::$ViewFile))
+				{
+				
+					$this->files = DbBuildFile::GetFiles($this->build->id);
+				
+				}
 			}	
 		}
 	}

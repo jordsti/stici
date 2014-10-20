@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 17 Octobre 2014 à 19:22
+-- Généré le :  Lun 20 Octobre 2014 à 21:29
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -74,6 +74,23 @@ CREATE TABLE IF NOT EXISTS `buildsteps_logs` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `build_files`
+--
+
+CREATE TABLE IF NOT EXISTS `build_files` (
+  `file_id` int(25) NOT NULL AUTO_INCREMENT,
+  `build_id` int(25) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `filesize` int(25) NOT NULL,
+  `stamp` int(25) NOT NULL,
+  `file_hash` varchar(32) NOT NULL,
+  PRIMARY KEY (`file_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `current_jobs`
 --
 
@@ -102,6 +119,19 @@ CREATE TABLE IF NOT EXISTS `envs` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `group_id` int(25) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(255) NOT NULL,
+  `flags` int(2) NOT NULL,
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `jobs`
 --
 
@@ -113,6 +143,35 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `build_number` int(3) NOT NULL,
   `target` int(2) NOT NULL,
   PRIMARY KEY (`job_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int(25) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `hash_type` varchar(8) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `stamp` int(25) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `users_groups` (
+  `link_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(25) NOT NULL,
+  `group_id` int(25) NOT NULL,
+  PRIMARY KEY (`link_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -131,6 +190,14 @@ CREATE TABLE IF NOT EXISTS `workers` (
   `worker_os` int(2) NOT NULL,
   PRIMARY KEY (`worker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+
+INSERT INTO `users` (`username`, `password`, `hash_type`, `email`, `stamp`) VALUES
+('admin', 'admin', 'clear', 'admin@localhost.com', 0);
+
+INSERT INTO `groups` (`group_name`, `flags`) VALUES
+('Guest', 537),
+('Admin', 1023);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

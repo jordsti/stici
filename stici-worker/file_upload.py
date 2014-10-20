@@ -95,6 +95,7 @@ class file_uploader(threading.Thread):
         print data
         if 'File upload' in req.text:
             print "Success"
+            print req.text
         else:
             print "Uploaded failed"
             #exception toto

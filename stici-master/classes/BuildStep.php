@@ -59,7 +59,10 @@ class BuildStep
 	
 	public function removeFlags($flag)
 	{
-		$this->flags = $flag ^ $this->flags;
+		if($this->testFlags($flag))
+		{
+			$this->flags = $flag ^ $this->flags;
+		}
 	}
 	
 	public function testFlags($flag)

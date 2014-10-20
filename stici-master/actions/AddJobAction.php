@@ -5,13 +5,11 @@ require_once("actions/CommonAction.php");
 class AddJobAction extends CommonAction
 {
 	private $showForm;
-	private $errors;
 
 	public function __construct()
 	{
-		$this->errors = array();
 		$this->showForm = false;
-		parent::__construct("Add job");
+		parent::__construct("Add job", Group::$AddJob);
 	}
 	
 	public function execute()

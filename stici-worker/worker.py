@@ -9,6 +9,7 @@ import threading
 import jobs
 import os
 import stici_exception
+import settings
 
 def generate_worker_hash():
     stamp = time.time()
@@ -27,7 +28,10 @@ def generate_worker_hash():
 
 
 def url_join(part1, part2):
-    return "%s/%s" % (part1, part2);
+    if part1.endswith('\\'):
+        return "%s%s" % (part1, part2)
+    else:
+        return "%s/%s" % (part1, part2)
 
 class stici_worker:
     #build status
@@ -284,7 +288,7 @@ class send_log_thread(threading.Thread):
         url = url_join(self.worker.master_url, stici_worker.BuildStepLog)
         data = {'step_id':self.step_id, 'build_id':self.build_id, 'hash':self.worker.hash, 'stdout':self.stdout, 'stderr':self.stderr, 'return_code':self.return_code, 'key': self.worker.key}
         data = urllib.urlencode(data)
-        r = urllib.urlopen(url, data)
+        r = urllib2.urlopen(url, data)
         print r.read()
 
 
@@ -292,10 +296,13 @@ import sys
 if __name__ == '__main__':
 
     print "Sti::CI Worker"
+    _settings = settings.settings()
+
+
     _workspace = "workspace"
-    _master_url = "http://localhost/stici/stici-master"
-    _git_path = None
-    _key = None
+    _master_url = _settings.url
+    _git_path = _settings.git_path
+    _key = _settings.key
 
     if platform.system() == 'Windows':
         _git_path = 'C:\\Program Files (x86)\\Git\\bin'

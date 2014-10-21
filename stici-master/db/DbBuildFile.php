@@ -30,7 +30,7 @@ class DbBuildFile
 			$bf->filename = $f_name;
 			$bf->size = $f_size;
 			$bf->hash = $f_hash;
-			$bf->stamp = $stamp;
+			$bf->stamp = $f_stamp;
 			$bf->jobId = $j_id;
 				
 		}

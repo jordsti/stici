@@ -72,7 +72,7 @@ class build_step(step.step):
             for a in stici_job.archives:
                 print "Uploading : %s" % os.path.basename(a)
                 upload_thread = file_upload.file_uploader(stici_job.worker, a)
-                upload_thread.run()
+                upload_thread.start()
                 while upload_thread.isAlive():
                     print "Uploading..."
                     time.sleep(1)

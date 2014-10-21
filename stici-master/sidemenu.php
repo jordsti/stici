@@ -1,7 +1,11 @@
 	<div class="sidemenu">
 		<h4>Menu</h4>
+		<?php if($page->isLogged())
+		{
+		?>
 		<a class="btn btn-default" href="my_account.php">My account</a>
-		<?php 
+		<?php		
+		}		
 		if($page->testGroupFlags(Group::$AddJob))
 		{
 		?>

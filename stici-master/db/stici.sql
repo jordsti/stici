@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.14
+-- version 3.4.11.1deb2+deb7u1
 -- http://www.phpmyadmin.net
 --
--- Client :  127.0.0.1
--- Généré le :  Lun 20 Octobre 2014 à 21:29
--- Version du serveur :  5.6.17
--- Version de PHP :  5.5.12
+-- Client: localhost
+-- Généré le: Mar 21 Octobre 2014 à 03:48
+-- Version du serveur: 5.5.38
+-- Version de PHP: 5.4.4-14+deb7u14
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `stici`
+-- Base de données: `stici`
 --
 
 -- --------------------------------------------------------
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `builds` (
   `build_number` int(2) NOT NULL,
   `worker_hash` varchar(64) NOT NULL,
   PRIMARY KEY (`build_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `buildsteps_logs` (
   `stderr` text NOT NULL,
   `return_code` int(11) NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `build_files` (
   `stamp` int(25) NOT NULL,
   `file_hash` varchar(32) NOT NULL,
   PRIMARY KEY (`file_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -189,8 +189,21 @@ CREATE TABLE IF NOT EXISTS `workers` (
   `last_tick` int(25) NOT NULL,
   `worker_os` int(2) NOT NULL,
   PRIMARY KEY (`worker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `worker_keys`
+--
+
+CREATE TABLE IF NOT EXISTS `worker_keys` (
+  `key_id` int(25) NOT NULL AUTO_INCREMENT,
+  `worker_key` varchar(255) NOT NULL,
+  `status` int(2) NOT NULL,
+  `stamp` int(25) NOT NULL,
+  PRIMARY KEY (`key_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `users` (`username`, `password`, `hash_type`, `email`, `stamp`) VALUES
 ('admin', 'admin', 'clear', 'admin@localhost.com', 0);

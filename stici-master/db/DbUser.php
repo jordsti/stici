@@ -18,6 +18,42 @@ class DbUser
 		
 		$con->close();
 	}
+	
+	public static function UpdateEmail($user)
+	{
+		if($user->id != 0)
+		{
+			$con = new DbConnection();
+				
+			$query = "UPDATE users SET email = ? WHERE user_id = ?";
+			$st = $con->prepare($query);
+			$email = $user->email;
+			$u_id = $user->id;
+			$st->bind_param("si", $email, $u_id);
+			$st->execute();
+				
+			$con->close();
+		}
+	}
+	
+	
+	public static function UpdatePassword($user)
+	{
+		if($user->id != 0)
+		{
+			$con = new DbConnection();
+			
+			$query = "UPDATE users SET hash_type = ?, password= ? WHERE user_id = ?";
+			$st = $con->prepare($query);
+			$hash = $user->hashType;
+			$pw = $user->password;
+			$u_id = $user->id;
+			$st->bind_param("ssi", $hash, $pw, $u_id);
+			$st->execute();
+			
+			$con->close();
+		}
+	}
 
 	public static function GetUsers()
 	{

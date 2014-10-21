@@ -18,4 +18,13 @@
 			<?php 
 			}
 			?>
+			
+			<?php 
+			if($page->testGroupFlags(Group::$AdminWorkers))
+			{
+			?>
+			<a class="btn btn-default" href="workers_key.php">Workers</a>
+			<?php 
+			}
+			?>
 		</div>

@@ -1,5 +1,6 @@
 	<div class="sidemenu">
 		<h4>Menu</h4>
+		<a class="btn btn-default" href="my_account.php">My account</a>
 		<?php 
 		if($page->testGroupFlags(Group::$AddJob))
 		{
@@ -8,8 +9,16 @@
 		<?php 
 		}
 		?>
-		<a class="btn btn-default" href="workers.php">View Workers</a>
 		
+		<?php 
+		if($page->testGroupFlags(Group::$ViewWorker))
+		{
+		?>
+		<a class="btn btn-default" href="workers.php">View Workers</a>
+		<?php 
+		}
+		
+		?>
 		<?php 
 		if($page->testGroupFlags(Group::$AddJob))
 		{

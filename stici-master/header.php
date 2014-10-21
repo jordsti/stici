@@ -26,9 +26,14 @@
 						<li><a href="index.php">Dashboard</a></li>
 						<?php
 						}
+						
+						if($page->testGroupFlags(Group::$EditSettings))
+						{
 						?>
 						<li><a href="settings.php">Settings</a></li>
 						<?php 
+						}
+						
 						if($page->isLogged())
 						{
 						?>

@@ -18,7 +18,7 @@ It took only 59 seconds versus 20 minutes... without -j for multi-core building.
 	- PHP 5
 	- A Web server (Tested with Apache2)
 	- MySQL Server
-	- Python 2.7
+	- Python 2.7 with (Apache Requests)
 	- Git
 
 	
@@ -40,15 +40,15 @@ This module is written and tested with Python 2.7. You need to specify your mast
 The worker stay registered on the master until 5 minutes of no response.
 
 
-### TO DO
+## TO DO
 
-	### Master
+### Master
+
+	-Delete build (logs, files)
+	-Settings to remove hard-coded things
+
+### Worker
+
+	-...
 	
-	- Users credentials for the master
-	- View all last builds on main page
-	- Settings page with timeout
-	- Artefact upload (build result)
 	
-	### Worker
-	
-	- Builded job zip archive

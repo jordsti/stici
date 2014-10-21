@@ -2,4 +2,5 @@ stici-worker/*.pyc
 stici-worker/.idea/*.xml
 stici-worker/workspace/*
 stici-master/files/*.zip
+stici-master/conf/*.data
 .settings/*

@@ -76,6 +76,10 @@ class build_step(step.step):
                 while upload_thread.isAlive():
                     print "Uploading..."
                     time.sleep(1)
+
+                self.stdout = upload_thread.stdout
+                self.stderr = upload_thread.stderr
+                self.return_code = upload_thread.return_code
         else:
             if len(self.__env_dict) == 0:
                 #wmpty env, getting OS env
@@ -91,10 +95,10 @@ class build_step(step.step):
             time_elapsed = time.time() - started
             print "%d seconds" % time_elapsed
 
-            if self.return_code == 0:
-                pass
-            elif self.test_flags(self.IgnoreReturn):
-                pass
-            else:
-                raise stici_exception.step_failed(self)
+        if self.return_code == 0:
+            pass
+        elif self.test_flags(self.IgnoreReturn):
+            pass
+        else:
+            raise stici_exception.step_failed(self)
 

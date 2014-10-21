@@ -57,6 +57,8 @@ class Build
 	public function getBuildTimeAgo()
 	{	
 		require_once("classes/utils.php");
+		if($this->stampEnd == 0)
+			return GetTimeAgo($this->stamp);
 		return GetTimeAgo($this->stampEnd);	
 	}
 }

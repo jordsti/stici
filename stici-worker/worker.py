@@ -44,9 +44,10 @@ class stici_worker:
     (BuildStepLog) = ('worker_log.php')
     (Upload) = ('worker_upload.php')
 
-    def __init__(self, master_url, git_path=None, workspace="workspace"):
+    def __init__(self, master_url, key, git_path=None, workspace="workspace"):
         self.host = platform.node()
         self.master_url = master_url
+        self.key = key
         self.hash = generate_worker_hash()
         self.registered = False
         self.interval = 30  #in seconds..
@@ -101,7 +102,7 @@ class stici_worker:
     def build_ended(self):
 
         url = url_join(self.master_url, self.BuildEnded)
-        param = "?build_id=%d&hash=%s&status=%d" % (self.build_id, self.hash, self.status)
+        param = "?build_id=%d&hash=%s&status=%d&key=%s" % (self.build_id, self.hash, self.status, self.key)
 
         print "Sending build result"
         u = urllib2.urlopen(url+param)
@@ -118,7 +119,7 @@ class stici_worker:
 
         if self.current_job is not None:
             url = url_join(self.master_url, self.StartBuild)
-            param = "?current_id=%d&hash=%s" % (self.current_job.current_id, self.hash)
+            param = "?current_id=%d&hash=%s&key=%s" % (self.current_job.current_id, self.hash, self.key)
 
             u = urllib2.urlopen(url+param)
             rs = u.read()
@@ -214,7 +215,7 @@ class stici_worker:
         if not self.registered:
             url = url_join(self.master_url, self.RegisterRequest)
 
-            param = "?hash=%s&hostname=%s&os=%d" % (self.hash, self.host, self.os)
+            param = "?hash=%s&hostname=%s&os=%d&key=%s" % (self.hash, self.host, self.os, self.key)
             u = urllib2.urlopen(url+param)
             rs = u.read()
 
@@ -230,7 +231,7 @@ class stici_worker:
     def claim_job(self, re_job):
         if re_job.status == remote_job.remote_job.Pending and self.registered:
             url = url_join(self.master_url, self.ClaimJob)
-            param = "?hash=%s&current_id=%d" % (self.hash, re_job.current_id)
+            param = "?hash=%s&current_id=%d&key=%s" % (self.hash, re_job.current_id, self.key)
             u = urllib2.urlopen(url+param)
             rs = u.read()
 
@@ -245,7 +246,7 @@ class stici_worker:
         if self.registered:
             print "Polling %s" % self.master_url
             url = url_join(self.master_url, self.PollJob)
-            param = "?hash=%s" % self.hash
+            param = "?hash=%s&key=%s" % (self.hash, self.key)
 
             u = urllib2.urlopen(url+param)
             rs = u.read()
@@ -281,7 +282,7 @@ class send_log_thread(threading.Thread):
 
     def run(self):
         url = url_join(self.worker.master_url, stici_worker.BuildStepLog)
-        data = {'step_id':self.step_id, 'build_id':self.build_id, 'hash':self.worker.hash, 'stdout':self.stdout, 'stderr':self.stderr, 'return_code':self.return_code}
+        data = {'step_id':self.step_id, 'build_id':self.build_id, 'hash':self.worker.hash, 'stdout':self.stdout, 'stderr':self.stderr, 'return_code':self.return_code, 'key': self.worker.key}
         data = urllib.urlencode(data)
         r = urllib.urlopen(url, data)
         print r.read()
@@ -294,6 +295,7 @@ if __name__ == '__main__':
     _workspace = "workspace"
     _master_url = "http://localhost/stici/stici-master"
     _git_path = None
+    _key = None
 
     if platform.system() == 'Windows':
         _git_path = 'C:\\Program Files (x86)\\Git\\bin'
@@ -315,9 +317,17 @@ if __name__ == '__main__':
             ia += 1
             if ia < ma:
                 _master_url = sys.argv[ia]
+        elif arg == '-key':
+            ia += 1
+            if ia < ma:
+                _key = sys.argv[ia]
 
         ia += 1
 
+    if _key is None:
+        print "Invalid key given !"
+        sys.exit()
 
-    worker = stici_worker(_master_url, _git_path, _workspace)
+
+    worker = stici_worker(_master_url, _key, _git_path, _workspace)
     worker.run()

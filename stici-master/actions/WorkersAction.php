@@ -9,7 +9,7 @@ class WorkersAction extends CommonAction
 	public function __construct()
 	{
 		$this->workers = array();
-		parent::__construct("Workers");
+		parent::__construct("Workers", Group::$ViewWorker);
 	}
 	
 	public function execute()

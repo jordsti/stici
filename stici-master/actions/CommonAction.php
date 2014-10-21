@@ -1,7 +1,7 @@
 <?php
 require_once("db/DbUser.php");
 require_once("db/DbGroup.php");
-
+require_once("classes/Settings.php");
 session_start();
 
 class CommonAction {
@@ -10,6 +10,7 @@ class CommonAction {
 	public $userId;
 	public $user;
 	public $groups;
+	private $settings;
 	private $logged;
 
 	public function __construct($title = "None", $requiredFlags = 0)
@@ -20,6 +21,7 @@ class CommonAction {
 		$this->title = $title;
 		$this->errors = array();
 		$this->groups = array();
+		$this->settings = new Settings();
 		
 		if(isset($_SESSION['errors']))
 		{
@@ -63,6 +65,11 @@ class CommonAction {
 		{
 			$this->redirectError(array('You don\'t got the right to peform this action'));
 		}
+	}
+	
+	public function setting($setting)
+	{
+		return $this->settings->get($setting);
 	}
 	
 	public function redirectError($errors)

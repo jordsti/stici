@@ -83,19 +83,24 @@ class file_uploader(threading.Thread):
         self.filepath = filepath
         self.worker = _worker
         self.url = worker.url_join(_worker.master_url, worker.stici_worker.Upload)
-
+        self.stdout = ""
+        self.stderr = ""
+        self.return_code = 0
 
 
     def run(self):
 
         data = { 'fileupload': open(self.filepath, 'rb') }
-        params = { 'build_id': self.worker.build_id, 'hash': self.worker.hash, 'filename': os.path.basename(self.filepath)}
+        params = { 'build_id': self.worker.build_id, 'hash': self.worker.hash, 'filename': os.path.basename(self.filepath), 'key': self.worker.key}
 
         req = requests.post(self.url, data=params, files=data)
         print data
         if 'File upload' in req.text:
             print "Success"
-            print req.text
+            self.stdout = "Archives uploaded with success\n"
         else:
             print "Uploaded failed"
+            self.stderr = req.text
+            self.return_code = -1
+        print req.text
             #exception toto

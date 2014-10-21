@@ -10,6 +10,7 @@ class BuildFile
 	public $filepath;
 	public $size;
 	public $hash;
+	public $jobName;
 	
 	//add some methods to get file size and posted ago
 	
@@ -23,6 +24,7 @@ class BuildFile
 		$this->filename = "";
 		$this->size = 0;
 		$this->hash = "";
+		$this->jobName = "";
 	}
 	
 	public function timeAgo()

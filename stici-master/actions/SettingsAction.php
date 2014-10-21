@@ -10,6 +10,26 @@ class SettingsAction extends CommonAction
 	
 	public function execute()
 	{
-	
+		if(isset($_GET['save']))
+		{
+			$save = false;
+			$settings = $this->settings();
+			
+			foreach($settings as $k => $n)
+			{
+				if(isset($_POST[$k]))
+				{
+					$settings[$k] = $_POST[$k];
+					$save = true;
+				}
+			}
+			
+			//save settings
+			if($save)
+			{
+				$this->overwriteSettings($settings);
+			}
+			
+		}
 	}
 }

@@ -1,5 +1,5 @@
 	<div class="sidemenu">
-		<h4>Menu</h4>
+		<h4>Sti::CI Menu</h4>
 		<?php if($page->isLogged())
 		{
 		?>

@@ -67,9 +67,19 @@ class CommonAction {
 		}
 	}
 	
+	public function overwriteSettings($settings)
+	{
+		$this->settings->overwrite($settings);
+	}
+	
 	public function setting($setting)
 	{
 		return $this->settings->get($setting);
+	}
+	
+	public function settings()
+	{
+		return $this->settings->getall();
 	}
 	
 	public function redirectError($errors)

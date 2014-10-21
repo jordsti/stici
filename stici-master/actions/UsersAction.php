@@ -33,7 +33,7 @@ class UsersAction extends CommonAction
 			$password2 = $_POST['password2'];
 			$grp = $_POST['group'];
 		
-			if(strlen($username) < 5 || strlen($username) > 32)
+			if(strlen($username) < $this->setting("username_min_char") || strlen($username) > $this->setting("username_max_char"))
 			{
 				$this->errors[] = "Invalid username, must be between 5 and 32 characters";
 				return;

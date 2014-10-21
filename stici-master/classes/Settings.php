@@ -25,12 +25,23 @@ class Settings
 		return $this->settings[$set_name];
 	}
 	
+	public function getall()
+	{
+		return $this->settings;
+	}
+	
 	public function defaultSettings()
 	{
 		$this->settings['password_hash'] = "sha256";
 		$this->settings['username_max_char'] = 32;
 		$this->settings['username_min_char'] = 5;
 		$this->settings['password_min_char'] = 5;
+	}
+	
+	public function overwrite($settings)
+	{
+		$this->settings = $settings;
+		$this->save();
 	}
 	
 	public function save()

@@ -25,24 +25,25 @@ require_once("errors.php");
 	</div>
 	<div class="row">
 		<form role="role" method="post" action="edit_user.php?user_id=<?php echo $page->_user->id; ?>&addgrp">
-		<div class="col-sm-2">
-		Assign new group
-		</div>
-		<select name="add_group" class="form-control">
-			<?php
-			foreach($page->all_groups as $g)
-			{
-			?>
-			<option value="<?php echo $g->name; ?>"><?php echo $g->name; ?></option>
-			<?php
-			}
-			?>
-		</select>
-		<div class="form-group">
-			<div class="col-sm-6 col-sm-offset2">
-				<button type="submit" class="btn btn-default">Add</button>
+			<div class="col-sm-2">
+			Assign new group
 			</div>
-		</div>
+			<select name="add_group" class="form-control">
+				<?php
+				foreach($page->all_groups as $g)
+				{
+				?>
+				<option value="<?php echo $g->name; ?>"><?php echo $g->name; ?></option>
+				<?php
+				}
+				?>
+			</select>
+			<div class="form-group">
+				<div class="col-sm-6 col-sm-offset2">
+					<button type="submit" class="btn btn-default">Add</button>
+				</div>
+			</div>
+		</form>
 	</div>
 	
 	<div class="row">

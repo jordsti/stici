@@ -9,6 +9,12 @@
 		
 		<!-- page here -->
 		<div class="container maintable">
+		
+			<?php 
+			if($page->testGroupFlags(Group::$ViewJob))
+			{
+			?>
+		
 			<h4>Job(s)</h4>
 			<table class="table table-hover">
 				<tr class="active">
@@ -49,6 +55,47 @@
 					
 			</table>
 			
+			<?php 
+			}
+			
+			if($page->testGroupFlags(Group::$ViewFile))
+			{
+			?>
+			
+			<table class="table table-hover">
+				<tr>
+					<th>Filename</th>
+					<th>Size</th>
+					<th>Hash</th>
+					<th>Job</th>
+					<th>Uploaded</th>
+					<th>-</th>
+				</tr>
+			<?php 
+			foreach($page->files as $f)
+			{
+			?>
+				<tr>
+					<td><?php echo $f->filename; ?></td>
+					<td><?php echo $f->size(); ?></td>
+					<td><?php echo $f->hash; ?></td>
+					<td><a href="job.php?job_id=<?php echo $f->jobId; ?>"><?php echo $f->jobName; ?></a></td>
+					<td><?php echo $f->timeAgo(); ?></td>
+					<td><a class="btn btn-default" href="download_file.php?file_id=<?php echo $f->id; ?>">Download</a></td>
+				</tr>
+			<?php 
+			}
+			?>
+			</table>
+			
+			<?php 
+			}
+			
+			
+			if($page->testGroupFlags(Group::$ViewBuild))
+			{
+			?>
+			
 			<h4>Last builds</h4>
 			<table class="table table-hover">
 				<tr class="active">
@@ -75,7 +122,7 @@
 			?>
 				<tr class="<?php echo $row_class; ?>">
 					<td><a href="viewbuild.php?build_id=<?php echo $b->id; ?>"><?php echo $b->buildNumber; ?></a></td>
-					<td><a href="job.php?job_id=<?php echo $b->jobId; ; ?>"><?php echo $b->jobName; ?><a></td>
+					<td><a href="job.php?job_id=<?php echo $b->jobId; ?>"><?php echo $b->jobName; ?></a></td>
 					<td><?php echo $b->getBuildTime(); ?></td>
 					<td><?php echo $b->getStatusText(); ?></td>
 					<td><?php echo $b->getBuildTimeAgo(); ?></td>
@@ -86,7 +133,9 @@
 			}
 			?>			
 			</table>
-			
+			<?php
+			}
+			?>		
 		</div>
 <?php
 	require_once("footer.php");

@@ -17,16 +17,15 @@ Create your job after that and open a new worker.
 	- Build status
 	- Worker status
 	- Multi OS Worker Support (Linux and Windows)
+	- User authentication
+	- Password expiration settings
+	- Group privilege
 
 #### TO DO
 
 	- possiblity to schedule build, (per hour, per days, etc..)
 
 	- Notification system between page (Notify errors and success)
-	
-	- File repository for uploaded build
-	
-	- Settings for deploying build
 	
 	- Delete job with are your sure prompt
 	

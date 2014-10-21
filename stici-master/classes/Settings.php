@@ -31,6 +31,7 @@ class Settings
 		$this->settings['username_max_char'] = 32;
 		$this->settings['username_min_char'] = 5;
 		$this->settings['password_min_char'] = 5;
+		$this->settings['']
 	}
 	
 	public function save()

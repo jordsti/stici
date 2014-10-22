@@ -24,7 +24,8 @@ It took only 59 seconds versus 20 minutes... without -j for multi-core building.
 	
 #### Features
 
-Sti::CI contains two modules which are needed to build.
+	- Provide a complete Build server with less dependency as possible.
+	- Simple interface
 
 
 #### stici-master
@@ -40,15 +41,3 @@ This module is written and tested with Python 2.7. You need to specify your mast
 The worker stay registered on the master until 5 minutes of no response.
 
 
-## TO DO
-
-### Master
-
-	-Delete build (logs, files)
-	-Settings to remove hard-coded things
-
-### Worker
-
-	-...
-	
-	

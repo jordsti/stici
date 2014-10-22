@@ -52,6 +52,28 @@ class CommonAction {
 				$this->user = $user;
 				DbUser::fillGroup($user);
 				$this->groups = $user->groups;
+
+				$page_name = "my_account.php";
+				
+				if($this->setting("password_expire_days") > 0 && strcmp( substr( $_SERVER['SCRIPT_NAME'], strlen($_SERVER['SCRIPT_NAME']) - strlen($page_name), strlen($page_name)), $page_name) != 0)
+				{
+					if($this->user->pwdStamp == 0)
+					{
+						//must change now ! this password was assigned by default or by the admin
+						$this->passwordExpired();
+					}
+					else
+					{
+						$diff = time() - $this->user->pwdStamp;
+						$secs_expire = $this->setting("password_expire_days")*3600*24;
+						
+						if($diff > $secs_expire)
+						{
+							$this->passwordExpired();
+						}
+						
+					}
+				}
 			}
 			
 		}
@@ -65,6 +87,11 @@ class CommonAction {
 		{
 			$this->redirectError(array('You don\'t got the right to peform this action'));
 		}
+	}
+	
+	private function passwordExpired()
+	{
+		$this->redirectError(array("Your password is expired ! You must change it now !"), 'my_account.php');
 	}
 	
 	public function overwriteSettings($settings)
@@ -82,10 +109,10 @@ class CommonAction {
 		return $this->settings->getall();
 	}
 	
-	public function redirectError($errors)
+	public function redirectError($errors , $page = 'error_page.php')
 	{
 		$_SESSION['errors'] = $errors;
-		header("location: error_page.php");
+		header("location: ".$page);
 		exit();
 	}
 	

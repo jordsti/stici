@@ -155,9 +155,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(25) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `salt` varchar(64) NOT NULL,
   `hash_type` varchar(8) NOT NULL,
   `email` varchar(255) NOT NULL,
   `stamp` int(25) NOT NULL,
+  `pwd_stamp` int(25) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -205,8 +207,8 @@ CREATE TABLE IF NOT EXISTS `worker_keys` (
   PRIMARY KEY (`key_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `users` (`username`, `password`, `hash_type`, `email`, `stamp`) VALUES
-('admin', 'admin', 'clear', 'admin@localhost.com', 0);
+INSERT INTO `users` (`username`, `password`, `hash_type`, `email`, `stamp`, `pwd_stamp`) VALUES
+('admin', 'admin', 'clear', 'admin@localhost.com', 0, 0);
 
 INSERT INTO `groups` (`group_name`, `flags`) VALUES
 ('Guest', 1),

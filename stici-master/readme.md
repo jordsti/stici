@@ -6,6 +6,8 @@ stici-master
 You need PHP5 and a MySQL Database. Import the SQL file located into db/stici.sql.
 Create your job after that and open a new worker.
 
+A installation script will be provided !
+
 
 ### Features
 
@@ -29,4 +31,13 @@ Create your job after that and open a new worker.
 	
 	- Delete job with are your sure prompt
 	
-	- View last build on home page -> DONE
+	- Find icon for current job status (Pending, Running, Completed)
+	
+	- Find icon for build completion (Building, Success, Failed)
+	
+	- Installation script
+	
+	- Settings description with variable type
+	
+	
+	

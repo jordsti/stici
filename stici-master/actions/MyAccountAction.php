@@ -42,7 +42,8 @@ class MyAccountAction extends CommonAction
 			$user = $this->user;
 			
 			$user->hashType = $this->setting("password_hash");
-			$user->password = hash($user->hashType, $pw);
+			$user->salt = User::GenerateSalt();
+			$user->password = hash($user->hashType, $pw.$user->salt);
 			
 			DbUser::UpdatePassword($user);
 			

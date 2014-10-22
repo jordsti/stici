@@ -118,6 +118,21 @@ CREATE TABLE IF NOT EXISTS `envs` (
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `login_attemps`
+--
+
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `attempt_id` int(25) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `stamp` text NOT NULL,
+  PRIMARY KEY (`attempt_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
 --
 -- Structure de la table `groups`
 --

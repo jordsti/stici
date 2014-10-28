@@ -10,3 +10,6 @@ This module only have one dependency
 
 ### TO DO
  - Main script with params
+ - local-builder with job file for params
+ - gui for local-builder (PyQt probably)
+ 

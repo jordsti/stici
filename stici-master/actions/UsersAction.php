@@ -56,10 +56,11 @@ class UsersAction extends CommonAction
 			
 			//this is good
 			$hash_type = "sha256";
-			$pw_hash = hash($hash_type, $password);
+			$salt = User::GenerateSalt();
+			$pw_hash = hash($hash_type, $password.$salt);
 			$email = "";
 			
-			DbUser::AddUser($username, $pw_hash, $hash_type, $email);
+			DbUser::AddUser($username, $pw_hash, $salt, $hash_type, $email);
 			
 			$user = DbUser::GetUserByUsername($username);
 			

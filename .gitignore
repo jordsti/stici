@@ -5,3 +5,5 @@ stici-worker/workspace/*
 stici-master/files/*.zip
 stici-master/conf/*.data
 .settings/*
+
+*.pyc

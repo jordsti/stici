@@ -10,3 +10,4 @@ This module only have one dependency
 
 ### TO DO
  - Main script with params
+ - Try/catch for http not responding

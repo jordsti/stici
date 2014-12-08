@@ -41,3 +41,7 @@ This module is written and tested with Python 2.7. You need to specify your mast
 The worker stay registered on the master until 5 minutes of no response.
 
 
+##### Ideas for future
+
+	- Release note into build information (specific file in repo)
+	- Project icon
